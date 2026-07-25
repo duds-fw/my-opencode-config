@@ -6,9 +6,7 @@
     "filesystem": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
+        "mcp-server-filesystem",
         "/home/projects"
       ],
       "enabled": true,
@@ -28,9 +26,7 @@
     "memory": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-memory"
+        "mcp-server-memory"
       ],
       "enabled": true,
       "timeout": 10000
@@ -38,9 +34,7 @@
     "sequential-thinking": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
+        "mcp-server-sequential-thinking"
       ],
       "enabled": true,
       "timeout": 15000
