@@ -17,9 +17,8 @@
     "git": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-git",
+        "uvx",
+        "mcp-server-git",
         "--repository",
         "/home/projects"
       ],
