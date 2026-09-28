@@ -1,0 +1,291 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "mcp": {
+    "filesystem": {
+      "type": "local",
+      "command": ["/usr/local/bin/mcp-server-filesystem", "/home/projects", "/home/eirene"],
+      "enabled": true,
+      "timeout": 10000
+    },
+    "git": {
+      "type": "local",
+      "command": ["/usr/local/bin/mcp-server-git", "--repository", "/home/projects", "/home/eirene/eirene-master"],
+      "enabled": true,
+      "timeout": 30000
+    },
+    "memory": {
+      "type": "local",
+      "command": ["/usr/local/bin/mcp-server-memory"],
+      "enabled": true,
+      "timeout": 10000
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["/usr/local/bin/mcp-server-sequential-thinking"],
+      "enabled": false,
+      "timeout": 15000
+    },
+    "browser": {
+      "type": "local",
+      "command": ["/usr/local/bin/npx", "-y", "@playwright/mcp"],
+      "enabled": false,
+      "timeout": 30000
+    },
+    "android": {
+      "type": "local",
+      "command": ["android-mcp-server"],
+      "enabled": false,
+      "timeout": 30000
+    },
+    "docker": {
+      "type": "local",
+      "command": ["/usr/local/bin/npx", "-y", "mcp-docker-server"],
+      "enabled": false,
+      "timeout": 30000
+    },
+    "ssh": {
+      "type": "local",
+      "command": ["/usr/local/bin/ssh-mcp", "--host=127.0.0.1", "--user=root", "--disableSudo"],
+      "enabled": false,
+      "timeout": 30000
+    },
+    "database": {
+      "type": "local",
+      "command": ["/usr/local/bin/npx", "-y", "@cocaxcode/database-mcp"],
+      "enabled": false,
+      "timeout": 30000
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": false,
+      "timeout": 30000
+    },
+    "deepwiki": {
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "enabled": false,
+      "timeout": 30000
+    }
+  },
+
+  "default_agent": "orchestrator",
+
+  "agent": {
+    "build": {
+      "permission": "allow",
+      "steps": 30
+    },
+    "orchestrator": {
+      "description": "Auto-pilot orchestrator. Classifies user requests and routes to the best specialist agent automatically. Enforces plan mode for multi-step tasks.",
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "git *": "allow",
+          "npm *": "allow",
+          "npx *": "allow",
+          "rtk *": "allow",
+          "mkdir *": "allow",
+          "ls *": "allow",
+          "cat *": "allow",
+          "echo *": "allow",
+          "export *": "allow",
+          "docker build*": "allow",
+          "terraform *": "ask",
+          "kubectl *": "ask",
+          "rm *": "deny",
+          "*": "ask"
+        },
+        "task": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow"
+      },
+      "steps": 60
+    },
+    "code-reviewer": {
+      "description": "Reviews code for quality, security, and best practices. Use when reviewing PRs or checking code quality.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "debugger": {
+      "description": "Helps debug issues by analyzing errors and suggesting fixes. Use when encountering bugs or errors.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "architect": {
+      "description": "Designs system architecture and plans. Use for architectural decisions and system design.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "tester": {
+      "description": "Testing specialist. Generates, improves, and analyzes tests. Use for test creation, coverage analysis, and test strategy.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "documenter": {
+      "description": "Documentation specialist. Creates READMEs, API references, JSDoc, and architectural documentation.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "devops": {
+      "description": "DevOps specialist. Handles CI/CD, Docker, Kubernetes, deployment, and infrastructure.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "security-auditor": {
+      "description": "Security specialist. Performs security audits, vulnerability scanning, and dependency checks.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "chloe-skills": {
+      "description": "IT Organization capability planning. Assesses role readiness and creates 30/60/90 learning plans for 15 IT roles.",
+      "mode": "subagent",
+      "permission": "allow",
+      "steps": 30
+    },
+    "plan": {
+      "description": "Plan agent. Creates structured execution plans for multi-step tasks. Use for any task requiring 3+ steps or architectural decisions.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "task": "allow"
+      },
+      "steps": 50
+    }
+  },
+
+  "command": {
+    "review": {
+      "description": "Review staged changes for issues",
+      "template": "Review the staged changes (git diff --cached) for:\n1. Security vulnerabilities\n2. Performance issues\n3. Code quality\n4. Best practices\n\nProvide a summary with specific issues and suggestions."
+    },
+    "explain": {
+      "description": "Explain how a file or module works",
+      "template": "Explain how $ARGUMENTS works. Break down:\n1. Purpose and responsibility\n2. Key functions/components\n3. Data flow\n4. Dependencies\n5. Edge cases"
+    },
+    "refactor": {
+      "description": "Suggest refactoring improvements",
+      "template": "Analyze $ARGUMENTS and suggest refactoring improvements:\n1. Code smells\n2. Duplication\n3. Complexity\n4. Naming\n5. Structure\n\nProvide specific, actionable suggestions."
+    },
+    "test": {
+      "description": "Generate or improve tests",
+      "template": "Analyze $ARGUMENTS and suggest test improvements:\n1. Missing test cases\n2. Edge cases to cover\n3. Mocking strategies\n4. Test organization\n5. Assertions to add"
+    },
+    "security": {
+      "description": "Security audit of code",
+      "template": "Perform a security audit of $ARGUMENTS:\n1. Input validation\n2. Authentication/Authorization\n3. Data exposure\n4. Injection vulnerabilities\n5. Dependency vulnerabilities\n6. Secrets management"
+    },
+    "optimize": {
+      "description": "Performance optimization suggestions",
+      "template": "Analyze $ARGUMENTS for performance:\n1. Time complexity\n2. Space complexity\n3. I/O operations\n4. Caching opportunities\n5. Parallelization potential\n6. Memory efficiency"
+    },
+    "graphify": {
+      "description": "Build knowledge graph from codebase",
+      "template": "Run graphify on the project to build a knowledge graph. Use --code-only for local extraction without API keys."
+    },
+    "graphify-query": {
+      "description": "Query the knowledge graph",
+      "template": "Query the knowledge graph: graphify query $ARGUMENTS"
+    },
+    "graphify-update": {
+      "description": "Update the knowledge graph",
+      "template": "Update the knowledge graph with recent changes: graphify update ."
+    },
+    "rtk-discover": {
+      "description": "Discover RTK savings opportunities",
+      "template": "Run rtk discover to find token savings opportunities"
+    },
+    "restart": {
+      "description": "Blue-green restart opencode (zero downtime)",
+      "template": "sudo /opt/opencode-proxy/restart.sh"
+    },
+    "assess": {
+      "description": "Assess IT role capability and create learning plan",
+      "template": "Assess the following role and create a 30/60/90 day learning plan:\n- Role: $ARGUMENTS\n- Current level: beginner/intermediate/advanced\n- Business goal: [describe]\n- Timeline: 90 days\n- Constraints: [list]\n\nUse chloe-skills agent for structured output."
+    },
+    "role-info": {
+      "description": "Get role information from skills matrix",
+      "template": "Search Memory MCP for role-$ARGUMENTS and provide:\n1. Core skills\n2. Tools\n3. Learning path\n4. Rubric capabilities\n5. Roadmap links"
+    }
+  },
+
+  "instructions": [
+    "AGENTS.md",
+    ".opencode/instructions/*.md"
+  ],
+
+  "permission": {
+    "edit": "allow",
+    "bash": {
+      "git *": "allow",
+      "npm *": "allow",
+      "npx *": "allow",
+      "node *": "allow",
+      "rtk *": "allow",
+      "ls *": "allow",
+      "cat *": "allow",
+      "mkdir *": "allow",
+      "cp *": "allow",
+      "echo *": "allow",
+      "export *": "allow",
+      "ps *": "allow",
+      "tail *": "allow",
+      "head *": "allow",
+      "find *": "allow",
+      "grep *": "allow",
+      "sudo gh *": "allow",
+      "sudo /opt/*": "allow",
+      "ssh-keyscan *": "allow",
+      "nohup *": "allow",
+      "wait *": "allow",
+      "kill *": "ask",
+      "rm -rf *": "deny",
+      "rm *": "deny",
+      "sudo rm *": "deny",
+      "chmod 777 *": "deny",
+      "curl *": "ask",
+      "wget *": "ask",
+      "*": "ask"
+    },
+    "external_directory": {
+      "/home/eirene/**": "allow",
+      "/home/projects/**": "allow",
+      "/root/.config/opencode/**": "allow",
+      "/tmp/opencode/**": "allow",
+      "*": "ask"
+    }
+  },
+
+  "plugin": [
+    "opencode-synced",
+    "./.opencode/plugins/graphify.js"
+  ],
+
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+
+  "experimental": {
+    "primary_tools": ["edit"],
+    "batch_tool": true
+  },
+
+  "compaction": {
+    "auto": true,
+    "tail_turns": 8
+  }
+}

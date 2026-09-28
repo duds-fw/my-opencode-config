@@ -1,0 +1,58 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "instructions": [
+    "AGENTS.md"
+  ],
+
+  "references": {
+    "eirene-master": {
+      "path": "eirene-master",
+      "description": "Frontend apps (Next.js) — landing, admin, console, sandbox + engine services"
+    },
+    "eirene-master-docs": {
+      "path": "eirene-master/docs",
+      "description": "Architecture, deployment, and API documentation"
+    },
+    "eirene-master-iac": {
+      "path": "eirene-master/iac",
+      "description": "Infrastructure as Code — Terraform modules and Kubernetes manifests"
+    },
+    "eirene-backend": {
+      "path": "/home/projects/eirene-backend",
+      "description": "Backend services (Go) — platform-gateway, client-runtime-agent, log-collector, Orchestrix-Continuum"
+    },
+    "platform-gateway": {
+      "path": "/home/projects/eirene-backend/platform-gateway",
+      "description": "Go — client onboarding, agent-per-client management, bearer token issue/revoke/validate (REST /api/v1/*)"
+    },
+    "client-runtime-agent": {
+      "path": "/home/projects/eirene-backend/client-runtime-agent",
+      "description": "Go — VM/pod runtime agent, log collection, packaging (cmd/agent, cmd/packager)"
+    },
+    "log-collector": {
+      "path": "/home/projects/eirene-backend/log-collector",
+      "description": "Go — stateless HTTP ingest, validates payload+token, publishes to Kafka (KAFKA_TOPIC_INGEST)"
+    },
+    "orchestrix-continuum": {
+      "path": "/home/projects/eirene-backend/Orchestrix-Continuum",
+      "description": "Go — autonomous engineering intelligence: incident analysis, remediation backlog, governed multi-agent pipeline"
+    }
+  },
+
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+
+  "permission": "allow",
+
+  "plugin": [
+    "opencode-synced",
+    "./.opencode/plugins/graphify.js"
+  ],
+
+  "compaction": {
+    "auto": true,
+    "tail_turns": 8
+  }
+}

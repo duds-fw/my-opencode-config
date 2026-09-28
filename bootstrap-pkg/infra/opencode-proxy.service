@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenCode Reverse Proxy
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node /opt/opencode-proxy/server.mjs
+WorkingDirectory=/opt/opencode-proxy
+Restart=always
+RestartSec=3
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

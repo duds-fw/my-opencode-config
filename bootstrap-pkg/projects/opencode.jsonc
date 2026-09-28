@@ -1,0 +1,131 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "shell": "/bin/bash",
+
+  "mcp": {
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/home/projects"],
+      "enabled": true,
+      "timeout": 10000
+    },
+    "git": {
+      "type": "local",
+      "command": ["/usr/local/bin/gk", "mcp"],
+      "enabled": true,
+      "timeout": 10000
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
+      "enabled": true,
+      "timeout": 10000
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "enabled": true,
+      "timeout": 15000
+    }
+  },
+
+  "agent": {
+    "build": {
+      "steps": 50
+    },
+    "code-reviewer": {
+      "description": "Reviews code for quality, security, and best practices. Use when reviewing PRs or checking code quality.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": { "git diff*": "allow", "git log*": "allow", "*": "ask" }
+      },
+      "prompt": "You are an expert code reviewer. Analyze code for:\n1. Security vulnerabilities\n2. Performance issues\n3. Code quality and readability\n4. Best practices and patterns\n5. Error handling\n6. Test coverage\n\nProvide specific, actionable feedback with line references."
+    },
+    "debugger": {
+      "description": "Helps debug issues by analyzing errors and suggesting fixes. Use when encountering bugs or errors.",
+      "mode": "subagent",
+      "permission": {
+        "bash": { "git log*": "allow", "git diff*": "allow", "*": "ask" }
+      },
+      "prompt": "You are an expert debugger. Help diagnose and fix issues by:\n1. Analyzing error messages and stack traces\n2. Identifying root causes\n3. Suggesting minimal fixes\n4. Explaining why the issue occurred\n5. Preventing similar issues in the future"
+    },
+    "architect": {
+      "description": "Designs system architecture and plans. Use for architectural decisions and system design.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny"
+      },
+      "prompt": "You are a senior software architect. Help with:\n1. System design decisions\n2. Architecture patterns\n3. Scalability considerations\n4. Technology selection\n5. API design\n6. Database schema design\n\nProvide trade-offs and reasoning for your recommendations."
+    }
+  },
+
+  "command": {
+    "review": {
+      "description": "Review staged changes for issues",
+      "template": "Review the staged changes (git diff --cached) for:\n1. Security vulnerabilities\n2. Performance issues\n3. Code quality\n4. Best practices\n\nProvide a summary with specific issues and suggestions."
+    },
+    "explain": {
+      "description": "Explain how a file or module works",
+      "template": "Explain how $ARGUMENTS works. Break down:\n1. Purpose and responsibility\n2. Key functions/components\n3. Data flow\n4. Dependencies\n5. Edge cases"
+    },
+    "refactor": {
+      "description": "Suggest refactoring improvements",
+      "template": "Analyze $ARGUMENTS and suggest refactoring improvements:\n1. Code smells\n2. Duplication\n3. Complexity\n4. Naming\n5. Structure\n\nProvide specific, actionable suggestions."
+    },
+    "test": {
+      "description": "Generate or improve tests",
+      "template": "Analyze $ARGUMENTS and suggest test improvements:\n1. Missing test cases\n2. Edge cases to cover\n3. Mocking strategies\n4. Test organization\n5. Assertions to add"
+    },
+    "security": {
+      "description": "Security audit of code",
+      "template": "Perform a security audit of $ARGUMENTS:\n1. Input validation\n2. Authentication/Authorization\n3. Data exposure\n4. Injection vulnerabilities\n5. Dependency vulnerabilities\n6. Secrets management"
+    },
+    "optimize": {
+      "description": "Performance optimization suggestions",
+      "template": "Analyze $ARGUMENTS for performance:\n1. Time complexity\n2. Space complexity\n3. I/O operations\n4. Caching opportunities\n5. Parallelization potential\n6. Memory efficiency"
+    },
+    "graphify": {
+      "description": "Build knowledge graph from codebase",
+      "template": "Run graphify on the project to build a knowledge graph. Use --code-only for local extraction without API keys."
+    },
+    "graphify-query": {
+      "description": "Query the knowledge graph",
+      "template": "Query the knowledge graph: graphify query $ARGUMENTS"
+    },
+    "graphify-update": {
+      "description": "Update the knowledge graph",
+      "template": "Update the knowledge graph with recent changes: graphify update ."
+    },
+    "rtk-discover": {
+      "description": "Discover RTK savings opportunities",
+      "template": "Run rtk discover to find token savings opportunities"
+    }
+  },
+
+  "instructions": [
+    "AGENTS.md",
+    ".opencode/instructions/*.md"
+  ],
+
+  "permission": "allow",
+
+  "plugin": [
+    "./.opencode/plugins/graphify.js"
+  ],
+
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+
+  "experimental": {
+    "primary_tools": ["edit"],
+    "batch_tool": true
+  },
+
+  "compaction": {
+    "auto": true,
+    "tail_turns": 15
+  }
+}

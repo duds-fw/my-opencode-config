@@ -1,0 +1,16 @@
+[Unit]
+Description=Opencode Web Server (Standby)
+After=network.target
+
+[Service]
+Type=simple
+Environment=OPENCODE_SERVER_PASSWORD=__OPENCODE_PASSWORD__
+Environment=OPENCODE_YOLO=true
+Environment=PATH=/usr/local/bin:/usr/bin:/bin:/root/.cargo/bin
+ExecStart=/usr/local/bin/opencode web --hostname 127.0.0.1 --port 4098
+WorkingDirectory=/home/projects
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

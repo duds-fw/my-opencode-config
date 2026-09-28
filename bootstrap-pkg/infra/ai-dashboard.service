@@ -1,0 +1,14 @@
+[Unit]
+Description=AI Usage Dashboard
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node server.js
+WorkingDirectory=/home/projects/ai-dashboard
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

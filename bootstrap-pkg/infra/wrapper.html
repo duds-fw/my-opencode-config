@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="manifest" href="/manifest.json?v=3">
+    <link rel="apple-touch-icon" href="/icon-192.png?v=2">
+    <title>Chloe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            touch-action: none;
+        }
+        iframe {
+            width: 100%; height: 100%;
+            border: none;
+            background: #0a0a0a;
+            pointer-events: auto;
+        }
+
+        /* Pull-to-refresh indicator */
+        .ptr-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            overflow: hidden;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: height 0.15s ease;
+        }
+        .ptr-indicator .ptr-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #888;
+            white-space: nowrap;
+        }
+        .ptr-indicator .ptr-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid #333;
+            border-top-color: #4ade80;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .ptr-indicator .ptr-arrow {
+            font-size: 16px;
+            transition: transform 0.15s;
+            color: #4ade80;
+        }
+        .ptr-indicator.ready .ptr-arrow { transform: rotate(180deg); }
+        .ptr-indicator.refreshing .ptr-arrow { display: none; }
+        .ptr-indicator.refreshing .ptr-spinner { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: max(80px, env(safe-area-inset-bottom, 80px));
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 99999;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.error { background: rgba(180, 40, 40, 0.9); color: #fff; }
+        .toast.success { background: rgba(30, 120, 60, 0.9); color: #fff; }
+        .toast.info { background: rgba(40, 80, 160, 0.9); color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="ptr-indicator" id="ptrIndicator">
+        <div class="ptr-content">
+            <div class="ptr-arrow">↓</div>
+            <div class="ptr-spinner" style="display:none"></div>
+            <span class="ptr-text">Pull to refresh</span>
+        </div>
+    </div>
+
+    <iframe id="ocFrame"></iframe>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    (function() {
+        const STORAGE_KEY = 'oc_last_session';
+        const PULL_THRESHOLD = 80;
+        const frame = document.getElementById('ocFrame');
+        const ptr = document.getElementById('ptrIndicator');
+        const ptrText = ptr.querySelector('.ptr-text');
+        const toast = document.getElementById('toast');
+
+        let startY = 0;
+        let pulling = false;
+        let ptrActive = false;
+        let toastTimer = null;
+        let refreshCooldown = false;
+
+        // --- Toast ---
+        function showToast(msg, type = 'info', dur = 2500) {
+            toast.textContent = msg;
+            toast.className = 'toast ' + type + ' show';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { toast.className = 'toast'; }, dur);
+        }
+
+        // --- Session persistence ---
+        let savedSessionUrl = null;
+        let urlPollTimer = null;
+
+        function saveSession() {
+            try {
+                const loc = frame.contentWindow?.location?.href;
+                if (loc && loc.includes('/session/') && loc !== savedSessionUrl) {
+                    savedSessionUrl = loc;
+                    localStorage.setItem(STORAGE_KEY, loc);
+                    console.log('[PTR] Session saved:', loc);
+                }
+            } catch(e) {} // cross-origin
+        }
+
+        function getLastSession() {
+            try {
+                return localStorage.getItem(STORAGE_KEY);
+            } catch(e) { return null; }
+        }
+
+        // Poll iframe URL to capture session after redirect
+        function startUrlPolling() {
+            if (urlPollTimer) clearInterval(urlPollTimer);
+            urlPollTimer = setInterval(saveSession, 1000);
+        }
+
+        // --- Load opencode ---
+        function loadOpenCode(url) {
+            if (!url) {
+                url = getLastSession() || '/server/';
+            }
+            console.log('[PTR] Loading:', url);
+            frame.src = url;
+            startUrlPolling();
+        }
+
+        frame.onload = function() {
+            // Delay to let opencode finish redirecting to session URL
+            setTimeout(saveSession, 500);
+            setTimeout(saveSession, 1500);
+            setTimeout(saveSession, 3000);
+        };
+
+        // --- Pull to Refresh ---
+        document.addEventListener('touchstart', (e) => {
+            if (refreshCooldown) return;
+            // Only start pull if scrolled to top inside iframe
+            try {
+                const iframeDoc = frame.contentDocument || frame.contentWindow?.document;
+                if (iframeDoc && iframeDoc.documentElement.scrollTop > 5) return;
+            } catch(e) {} // cross-origin - allow pull
+
+            startY = e.touches[0].clientY;
+            pulling = true;
+            ptrActive = false;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!pulling || refreshCooldown) return;
+
+            const deltaY = e.touches[0].clientY - startY;
+            if (deltaY <= 0) {
+                ptr.style.height = '0';
+                return;
+            }
+
+            // Only activate if near top of page
+            const pullDist = Math.min(deltaY * 0.5, 120);
+            
+            if (pullDist > 10) {
+                ptrActive = true;
+                ptr.style.height = pullDist + 'px';
+
+                if (pullDist >= PULL_THRESHOLD) {
+                    ptr.className = 'ptr-indicator ready';
+                    ptrText.textContent = 'Release to refresh';
+                } else {
+                    ptr.className = 'ptr-indicator';
+                    ptrText.textContent = 'Pull to refresh';
+                }
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', () => {
+            if (!ptrActive || refreshCooldown) {
+                pulling = false;
+                ptrActive = false;
+                ptr.style.height = '0';
+                return;
+            }
+
+            const h = parseInt(ptr.style.height) || 0;
+            if (h >= PULL_THRESHOLD) {
+                // Trigger refresh
+                ptr.className = 'ptr-indicator refreshing';
+                ptrText.textContent = 'Refreshing...';
+                ptr.style.height = '50px';
+                refreshCooldown = true;
+
+                setTimeout(() => {
+                    showToast('Refreshing...', 'info');
+                    // Try to get current session URL first, fallback to last saved
+                    let url = getLastSession() || '/server/';
+                    frame.src = 'about:blank';
+                    setTimeout(() => {
+                        loadOpenCode(url);
+                        setTimeout(() => {
+                            ptr.style.height = '0';
+                            ptr.className = 'ptr-indicator';
+                            showToast('Refreshed', 'success');
+                            setTimeout(() => { refreshCooldown = false; }, 1000);
+                        }, 500);
+                    }, 200);
+                }, 200);
+            } else {
+                ptr.style.height = '0';
+                ptr.className = 'ptr-indicator';
+            }
+
+            pulling = false;
+            ptrActive = false;
+        }, { passive: true });
+
+        // --- Health check with auto-reconnect + graceful continue ---
+        let wasDown = false;
+        let lastReloadTime = 0;
+        const RELOAD_COOLDOWN = 30000; // min 30s between reloads
+
+        async function healthCheck() {
+            try {
+                const ctrl = new AbortController();
+                const timer = setTimeout(() => ctrl.abort(), 5000);
+                await fetch('/server/', { method: 'HEAD', signal: ctrl.signal, cache: 'no-store' });
+                clearTimeout(timer);
+
+                // Server is back after being down → auto-reload + check continue flag
+                if (wasDown) {
+                    const now = Date.now();
+                    if (now - lastReloadTime < RELOAD_COOLDOWN) {
+                        // Too soon since last reload — just clear flag, don't reload
+                        wasDown = false;
+                        console.log('[PTR] Server recovered but reload cooldown active, skipping reload');
+                        return;
+                    }
+                    wasDown = false;
+                    lastReloadTime = now;
+                    showToast('Server is back! Reloading...', 'success');
+                    let url = getLastSession() || '/server/';
+                    frame.src = 'about:blank';
+                    setTimeout(() => {
+                        loadOpenCode(url);
+                        // After iframe loads, check if we need to continue
+                        setTimeout(checkAndContinue, 3000);
+                    }, 500);
+                }
+            } catch (e) {
+                if (!wasDown) {
+                    wasDown = true;
+                    showToast('Server restarting... waiting', 'info', 0);
+                }
+            }
+        }
+
+        // Check restart flag and send continue message
+        let continueAlreadySent = false; // prevent duplicate sends per page session
+
+        async function checkAndContinue() {
+            if (continueAlreadySent) return; // already sent this session, don't repeat
+            try {
+                const res = await fetch('/api/restart-status', { cache: 'no-store' });
+                const status = await res.json();
+                if (status.needsContinue && status.sessionId) {
+                    // CONSUME FLAG FIRST (prevents other tabs from also sending)
+                    const consumed = await fetch('/api/restart-consume', { method: 'POST' });
+                    const cData = await consumed.json();
+                    if (!cData.consumed) {
+                        console.log('[PTR] Flag already consumed by another tab, skipping');
+                        return;
+                    }
+
+                    continueAlreadySent = true;
+                    showToast('Resuming conversation...', 'info', 3000);
+
+                    // Now send continue message
+                    await fetch('/api/continue', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sessionId: status.sessionId,
+                            message: 'Restart complete. Please continue your last response based on the conversation context.'
+                        })
+                    });
+                }
+            } catch (e) {
+                console.log('[PTR] Continue check failed:', e.message);
+            }
+        }
+        setInterval(healthCheck, 3000);
+
+        // --- Visibility change ---
+        let lastVisibilityCheck = 0;
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const now = Date.now();
+                if (now - lastVisibilityCheck < 10000) return; // debounce 10s
+                lastVisibilityCheck = now;
+                healthCheck();
+                setTimeout(checkAndContinue, 1000);
+                // Try to save current session on return
+                setTimeout(saveSession, 1000);
+            }
+        });
+
+        // --- Service Worker ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+
+        // --- Start ---
+        loadOpenCode();
+        // Check continue flag on page load (in case user refreshed after restart)
+        setTimeout(checkAndContinue, 2000);
+    })();
+    </script>
+</body>
+</html>

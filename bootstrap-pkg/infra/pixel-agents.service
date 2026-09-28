@@ -1,0 +1,17 @@
+[Unit]
+Description=Pixel Agents Server
+After=network.target
+
+[Service]
+Type=simple
+Environment=PIXEL_AGENTS_PROVIDER=opencode
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/local/bin/node /home/projects/pixel-agents/dist/cli.js --port 3100 --host 0.0.0.0
+WorkingDirectory=/home/projects/pixel-agents
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
