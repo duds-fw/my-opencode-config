@@ -1,4 +1,99 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-synced"]
+
+  "default_agent": "orchestrator",
+
+  "agents": {
+    "build": {
+      "mode": "primary"
+    },
+    "orchestrator": {
+      "description": "Auto-pilot orchestrator. Classifies user requests and routes to the best specialist agent automatically.",
+      "mode": "primary",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "allow" },
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" },
+        { "action": "subagent", "resource": "*", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "ask" }
+      ]
+    },
+    "plan": {
+      "description": "Plan agent. Creates structured execution plans for multi-step tasks.",
+      "mode": "subagent",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" },
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "grep", "resource": "*", "effect": "allow" },
+        { "action": "subagent", "resource": "*", "effect": "allow" }
+      ]
+    },
+    "general": {
+      "mode": "subagent"
+    },
+    "explore": {
+      "mode": "subagent"
+    }
+  },
+
+  "commands": {
+    "review": {
+      "description": "Review staged changes for issues",
+      "template": "Review the staged changes (git diff --cached) for security, performance, quality, and best practices. Provide specific issues and suggestions."
+    },
+    "explain": {
+      "description": "Explain code clearly",
+      "template": "Explain $ARGUMENTS: purpose, key functions, data flow, dependencies, and edge cases."
+    },
+    "test": {
+      "description": "Generate or improve tests",
+      "template": "Analyze $ARGUMENTS and suggest/generate tests covering missing cases, edge cases, and proper assertions."
+    }
+  },
+
+  "permissions": [
+    { "action": "edit", "resource": "*", "effect": "allow" },
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "glob", "resource": "*", "effect": "allow" },
+    { "action": "grep", "resource": "*", "effect": "allow" },
+    { "action": "shell", "resource": "git *", "effect": "allow" },
+    { "action": "shell", "resource": "npm *", "effect": "allow" },
+    { "action": "shell", "resource": "npx *", "effect": "allow" },
+    { "action": "shell", "resource": "bun *", "effect": "allow" },
+    { "action": "shell", "resource": "bunx *", "effect": "allow" },
+    { "action": "shell", "resource": "ls *", "effect": "allow" },
+    { "action": "shell", "resource": "cat *", "effect": "allow" },
+    { "action": "shell", "resource": "mkdir *", "effect": "allow" },
+    { "action": "shell", "resource": "cp *", "effect": "allow" },
+    { "action": "shell", "resource": "echo *", "effect": "allow" },
+    { "action": "shell", "resource": "pwd", "effect": "allow" },
+    { "action": "shell", "resource": "which *", "effect": "allow" },
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+    { "action": "shell", "resource": "rm -rf *", "effect": "deny" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" },
+    { "action": "websearch", "resource": "*", "effect": "allow" }
+  ],
+
+  "skills": [
+    "./skills"
+  ],
+
+  "plugins": [],
+
+  "mcp": {
+    "servers": {}
+  },
+
+  "instructions": [
+    "AGENTS.md",
+    "README.md"
+  ],
+
+  "compaction": {
+    "auto": true
+  }
 }
