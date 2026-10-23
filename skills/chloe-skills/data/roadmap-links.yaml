@@ -1,0 +1,123 @@
+source: roadmap.sh
+last_updated: 2026-04-19
+
+roles:
+  software_engineer:
+    direct_links:
+      - https://roadmap.sh/frontend
+      - https://roadmap.sh/backend
+      - https://roadmap.sh/full-stack
+    supporting_links:
+      - https://roadmap.sh/devops
+      - https://roadmap.sh/system-design
+      - https://roadmap.sh/git-github
+
+  product_owner_product_manager:
+    direct_links:
+      - https://roadmap.sh/product-manager
+    supporting_links:
+      - https://roadmap.sh/system-design
+      - https://roadmap.sh/software-design-architecture
+
+  business_enablement:
+    direct_links: []
+    supporting_links:
+      - https://roadmap.sh/product-manager
+      - https://roadmap.sh/software-design-architecture
+      - https://roadmap.sh/api-design
+
+  quality_assurance:
+    direct_links:
+      - https://roadmap.sh/qa
+    supporting_links:
+      - https://roadmap.sh/test-automation
+      - https://roadmap.sh/backend
+      - https://roadmap.sh/devops
+
+  ui_ux_designer:
+    direct_links:
+      - https://roadmap.sh/ux-design
+    supporting_links:
+      - https://roadmap.sh/frontend
+      - https://roadmap.sh/accessibility
+
+  it_infrastructure:
+    direct_links:
+      - https://roadmap.sh/devops
+    supporting_links:
+      - https://roadmap.sh/linux
+      - https://roadmap.sh/docker
+      - https://roadmap.sh/kubernetes
+
+  network_and_security:
+    direct_links:
+      - https://roadmap.sh/cyber-security
+    supporting_links:
+      - https://roadmap.sh/devops
+      - https://roadmap.sh/linux
+      - https://roadmap.sh/computer-science
+
+  database_administrator:
+    direct_links:
+      - https://roadmap.sh/sql
+    supporting_links:
+      - https://roadmap.sh/postgresql-dba
+      - https://roadmap.sh/mongodb-dba
+      - https://roadmap.sh/linux
+
+  database_engineer:
+    direct_links:
+      - https://roadmap.sh/sql
+      - https://roadmap.sh/postgresql
+    supporting_links:
+      - https://roadmap.sh/backend
+      - https://roadmap.sh/system-design
+      - https://roadmap.sh/api-design
+
+  ai_engineer:
+    direct_links:
+      - https://roadmap.sh/ai-engineer
+    supporting_links:
+      - https://roadmap.sh/python
+      - https://roadmap.sh/machine-learning
+      - https://roadmap.sh/backend
+
+  devops_sre:
+    direct_links:
+      - https://roadmap.sh/devops
+    supporting_links:
+      - https://roadmap.sh/kubernetes
+      - https://roadmap.sh/docker
+      - https://roadmap.sh/linux
+
+  cloud_engineer:
+    direct_links: []
+    supporting_links:
+      - https://roadmap.sh/aws
+      - https://roadmap.sh/azure
+      - https://roadmap.sh/devops
+
+  it_support_service_desk:
+    direct_links: []
+    supporting_links:
+      - https://roadmap.sh/linux
+      - https://roadmap.sh/computer-science
+      - https://roadmap.sh/git-github
+
+  data_analyst:
+    direct_links: []
+    supporting_links:
+      - https://roadmap.sh/sql
+      - https://roadmap.sh/data-analyst
+      - https://roadmap.sh/excel
+
+  security_operations_soc:
+    direct_links: []
+    supporting_links:
+      - https://roadmap.sh/cyber-security
+      - https://roadmap.sh/linux
+      - https://roadmap.sh/devops
+
+notes:
+  - Some role names may vary on roadmap.sh over time.
+  - When a direct role roadmap is unavailable, use closest adjacent topic links.

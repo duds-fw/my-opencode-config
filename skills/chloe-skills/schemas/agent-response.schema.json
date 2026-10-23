@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dqxorg.github.io/chloe-skills/schemas/agent-response.schema.json",
+  "title": "Chloe Skills Agent Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "role_summary",
+    "current_vs_target_gaps",
+    "top_priorities",
+    "execution_plan_30_60_90",
+    "evidence_required",
+    "metrics_and_targets",
+    "risks_and_mitigations",
+    "confidence_and_assumptions"
+  ],
+  "properties": {
+    "role_summary": { "type": "string", "minLength": 20 },
+    "current_vs_target_gaps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skill", "current", "target", "impact"],
+        "properties": {
+          "skill": { "type": "string" },
+          "current": { "type": "string" },
+          "target": { "type": "string" },
+          "impact": { "type": "string" }
+        }
+      }
+    },
+    "top_priorities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": { "type": "string", "minLength": 5 }
+    },
+    "execution_plan_30_60_90": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day_0_30", "day_31_60", "day_61_90"],
+      "properties": {
+        "day_0_30": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "day_31_60": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "day_61_90": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+    "evidence_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "metrics_and_targets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "target", "horizon_days"],
+        "properties": {
+          "metric": { "type": "string" },
+          "target": { "type": "string" },
+          "horizon_days": { "type": "integer", "minimum": 30, "maximum": 365 }
+        }
+      }
+    },
+    "risks_and_mitigations": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "mitigation"],
+        "properties": {
+          "risk": { "type": "string" },
+          "mitigation": { "type": "string" }
+        }
+      }
+    },
+    "confidence_and_assumptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence", "assumptions", "unknowns"],
+      "properties": {
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "assumptions": { "type": "array", "items": { "type": "string" } },
+        "unknowns": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

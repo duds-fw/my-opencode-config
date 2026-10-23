@@ -1,0 +1,307 @@
+version: 1
+updated_at: 2026-04-19
+
+levels:
+  - beginner
+  - intermediate
+  - advanced
+  - expert
+
+common_foundation:
+  competencies:
+    - communication
+    - documentation
+    - stakeholder_management
+    - incident_response_basics
+    - agile_ways_of_working
+    - ai_assisted_productivity
+
+roles:
+  software_engineer:
+    target_level: advanced
+    core_skills:
+      - programming_fundamentals
+      - data_structures_algorithms
+      - api_design_and_integration
+      - software_architecture_basics
+      - testing_unit_integration
+      - git_and_code_review
+      - ci_cd_fundamentals
+      - cloud_deployment_basics
+      - secure_coding_basics
+      - observability_basics
+    tools:
+      - git
+      - github_or_gitlab
+      - docker
+      - ci_cd_platform
+      - cloud_provider
+
+  product_owner_product_manager:
+    target_level: advanced
+    core_skills:
+      - product_discovery
+      - roadmap_planning
+      - backlog_management
+      - requirement_prioritization
+      - kpi_and_okr_definition
+      - stakeholder_alignment
+      - user_story_mapping
+      - release_planning
+      - value_risk_tradeoff
+      - data_informed_decision_making
+    tools:
+      - jira_or_azure_devops
+      - product_analytics
+      - roadmap_tooling
+      - collaboration_tools
+
+  business_enablement:
+    target_level: advanced
+    core_skills:
+      - process_mapping
+      - business_analysis
+      - change_management
+      - governance_and_compliance_alignment
+      - cross_function_facilitation
+      - operating_model_design
+      - vendor_coordination
+      - business_case_creation
+      - service_transition
+      - value_tracking
+    tools:
+      - process_documentation_tools
+      - bpm_or_ticketing_tools
+      - reporting_dashboards
+
+  quality_assurance:
+    target_level: advanced
+    core_skills:
+      - test_strategy_design
+      - test_case_design
+      - api_testing
+      - ui_testing
+      - automation_frameworks
+      - performance_testing_basics
+      - security_testing_basics
+      - defect_lifecycle_management
+      - shift_left_quality
+      - release_readiness_validation
+    tools:
+      - postman
+      - playwright_or_selenium
+      - junit_or_pytest
+      - test_management_tool
+      - ci_cd_platform
+
+  ui_ux_designer:
+    target_level: advanced
+    core_skills:
+      - user_research
+      - information_architecture
+      - interaction_design
+      - visual_design_systems
+      - accessibility_wcag
+      - prototyping
+      - usability_testing
+      - design_handoff
+      - product_metrics_literacy
+      - prompt_design_for_ui_generation
+    tools:
+      - figma
+      - prototyping_tools
+      - analytics_tools
+      - accessibility_checkers
+
+  it_infrastructure:
+    target_level: advanced
+    core_skills:
+      - operating_system_administration
+      - virtualization
+      - backup_and_recovery
+      - capacity_planning
+      - monitoring_and_alerting
+      - patch_and_configuration_management
+      - disaster_recovery_planning
+      - asset_and_lifecycle_management
+      - automation_scripting
+      - service_availability_management
+    tools:
+      - vmware_or_hyperv
+      - windows_server_or_linux
+      - monitoring_stack
+      - configuration_management_tool
+      - backup_platform
+
+  network_and_security:
+    target_level: advanced
+    core_skills:
+      - network_foundations_tcp_ip_dns
+      - routing_and_switching_basics
+      - firewall_and_segmentation
+      - identity_and_access_management
+      - vulnerability_management
+      - siem_and_log_analysis
+      - incident_response
+      - zero_trust_principles
+      - endpoint_security_basics
+      - security_awareness_programs
+    tools:
+      - firewall_platforms
+      - siem_tools
+      - vulnerability_scanners
+      - idp_or_directory_services
+
+  database_administrator:
+    target_level: advanced
+    core_skills:
+      - sql_proficiency
+      - database_installation_and_configuration
+      - backup_restore
+      - performance_tuning
+      - replication_and_high_availability
+      - access_control_and_auditing
+      - patching_and_upgrade_management
+      - capacity_forecasting
+      - incident_and_problem_management
+      - dr_for_databases
+    tools:
+      - postgresql_or_mysql_or_mssql
+      - backup_tools
+      - monitoring_tools
+      - sql_profiler_tools
+
+  database_engineer:
+    target_level: advanced
+    core_skills:
+      - data_modeling
+      - schema_design
+      - sql_optimization
+      - etl_elt_fundamentals
+      - data_quality_controls
+      - transaction_and_consistency_patterns
+      - db_migration_strategy
+      - integration_with_applications
+      - observability_for_data_pipelines
+      - data_governance_basics
+    tools:
+      - postgresql_or_mysql
+      - orchestration_tools
+      - data_pipeline_frameworks
+      - versioned_migration_tools
+
+  ai_engineer:
+    target_level: advanced
+    core_skills:
+      - python_for_ai
+      - ml_fundamentals
+      - llm_application_design
+      - prompt_engineering
+      - rag_architecture_basics
+      - model_evaluation
+      - mlops_basics
+      - data_preparation_and_labeling
+      - ai_safety_and_governance
+      - cost_and_latency_optimization
+    tools:
+      - python
+      - pytorch_or_tensorflow
+      - vector_database
+      - orchestration_frameworks
+      - model_monitoring_tools
+
+  devops_sre:
+    target_level: advanced
+    core_skills:
+      - ci_cd_architecture
+      - infrastructure_as_code
+      - container_orchestration
+      - reliability_engineering
+      - incident_management
+      - observability_engineering
+      - release_engineering
+      - cloud_operations
+      - security_shift_left
+      - automation_platforms
+    tools:
+      - github_actions_or_gitlab_ci
+      - terraform
+      - kubernetes
+      - prometheus_and_grafana
+      - cloud_provider
+
+  cloud_engineer:
+    target_level: advanced
+    core_skills:
+      - cloud_architecture_basics
+      - identity_and_access_cloud
+      - networking_in_cloud
+      - compute_storage_database_services
+      - cost_optimization_finops
+      - cloud_security_controls
+      - infrastructure_as_code
+      - backup_and_resilience_cloud
+      - monitoring_and_alerting_cloud
+      - migration_patterns
+    tools:
+      - aws_or_azure_or_gcp
+      - terraform_or_bicep
+      - cloud_monitoring_tools
+      - cloud_cost_management_tools
+
+  it_support_service_desk:
+    target_level: advanced
+    core_skills:
+      - incident_intake_and_triage
+      - itil_fundamentals
+      - ticket_lifecycle_management
+      - root_cause_escalation
+      - endpoint_and_identity_basics
+      - knowledge_base_management
+      - customer_communication
+      - service_level_management
+      - shift_handover_practices
+      - automation_for_repetitive_tickets
+    tools:
+      - service_desk_platform
+      - endpoint_management_tools
+      - remote_support_tools
+      - knowledge_base_platform
+
+  data_analyst:
+    target_level: advanced
+    core_skills:
+      - sql_and_data_extraction
+      - data_cleaning_and_preparation
+      - dashboard_design
+      - exploratory_data_analysis
+      - statistical_reasoning
+      - business_storytelling
+      - experimentation_basics
+      - data_quality_validation
+      - stakeholder_requirement_translation
+      - self_service_analytics_enablement
+    tools:
+      - sql_engine
+      - bi_tool
+      - python_or_r
+      - spreadsheet_tools
+
+  security_operations_soc:
+    target_level: advanced
+    core_skills:
+      - alert_triage
+      - threat_detection_engineering
+      - log_analysis_and_correlation
+      - incident_response_playbooks
+      - threat_hunting_basics
+      - endpoint_detection_and_response
+      - siem_operations
+      - vulnerability_contextualization
+      - digital_forensics_basics
+      - reporting_and_post_incident_review
+    tools:
+      - siem_platform
+      - edr_platform
+      - threat_intelligence_feeds
+      - ticketing_and_case_management

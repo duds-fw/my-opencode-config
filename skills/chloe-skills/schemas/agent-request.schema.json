@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dqxorg.github.io/chloe-skills/schemas/agent-request.schema.json",
+  "title": "Chloe Skills Agent Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "target_role",
+    "current_level",
+    "business_goal",
+    "timeline_days",
+    "constraints"
+  ],
+  "properties": {
+    "target_role": {
+      "type": "string",
+      "enum": [
+        "software_engineer",
+        "product_owner_product_manager",
+        "business_enablement",
+        "quality_assurance",
+        "ui_ux_designer",
+        "it_infrastructure",
+        "network_and_security",
+        "database_administrator",
+        "database_engineer",
+        "ai_engineer",
+        "devops_sre",
+        "cloud_engineer",
+        "it_support_service_desk",
+        "data_analyst",
+        "security_operations_soc"
+      ]
+    },
+    "current_level": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced", "expert"]
+    },
+    "team_stack": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "business_goal": {
+      "type": "string",
+      "minLength": 10
+    },
+    "timeline_days": {
+      "type": "integer",
+      "minimum": 30,
+      "maximum": 730
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 2 },
+      "minItems": 1
+    },
+    "current_evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 3 },
+      "default": []
+    },
+    "organization_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "industry": { "type": "string" },
+        "regulated": { "type": "boolean", "default": false },
+        "region": { "type": "string" }
+      }
+    }
+  }
+}

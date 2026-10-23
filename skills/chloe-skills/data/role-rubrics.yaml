@@ -1,0 +1,436 @@
+version: 1
+updated_at: 2026-04-19
+
+scoring_scale:
+  1: awareness
+  2: assisted_execution
+  3: independent_execution
+  4: optimization_and_leadership
+  5: organizational_standard_setter
+
+default_evidence_types:
+  - delivered_artifact
+  - measurable_metric
+  - peer_or_manager_feedback
+  - incident_or_case_history
+
+rubrics:
+  software_engineer:
+    capabilities:
+      coding_and_design:
+        expected_score: 3
+        evidence:
+          - merged_features_with_code_review
+          - design_docs_for_non_trivial_changes
+      testing_and_quality:
+        expected_score: 3
+        evidence:
+          - unit_and_integration_test_coverage
+          - defect_escape_rate_trend
+      delivery_and_devops:
+        expected_score: 3
+        evidence:
+          - ci_pipeline_contributions
+          - deployment_change_logs
+      reliability_and_operations:
+        expected_score: 3
+        evidence:
+          - incident_postmortems_contributed
+          - observability_dashboard_updates
+      collaboration:
+        expected_score: 3
+        evidence:
+          - cross_team_prs
+          - technical_knowledge_sharing
+
+  product_owner_product_manager:
+    capabilities:
+      product_strategy:
+        expected_score: 3
+        evidence:
+          - documented_product_goals
+          - roadmap_decision_records
+      discovery_and_validation:
+        expected_score: 3
+        evidence:
+          - user_research_findings
+          - hypothesis_results
+      backlog_and_prioritization:
+        expected_score: 3
+        evidence:
+          - backlog_health_metrics
+          - prioritization_framework_usage
+      stakeholder_management:
+        expected_score: 3
+        evidence:
+          - alignment_meeting_outcomes
+          - conflict_resolution_examples
+      outcome_measurement:
+        expected_score: 3
+        evidence:
+          - kpi_baseline_and_improvement
+          - release_impact_reports
+
+  business_enablement:
+    capabilities:
+      process_analysis:
+        expected_score: 3
+        evidence:
+          - as_is_to_be_process_maps
+          - cycle_time_or_throughput_metrics
+      governance_and_compliance:
+        expected_score: 3
+        evidence:
+          - control_mapping_documents
+          - audit_readiness_artifacts
+      change_adoption:
+        expected_score: 3
+        evidence:
+          - adoption_plan_and_results
+          - stakeholder_training_records
+      business_case_development:
+        expected_score: 3
+        evidence:
+          - cost_benefit_analysis
+          - approved_initiative_proposals
+      service_transition:
+        expected_score: 3
+        evidence:
+          - handover_checklists
+          - operational_acceptance_signoff
+
+  quality_assurance:
+    capabilities:
+      test_planning:
+        expected_score: 3
+        evidence:
+          - risk_based_test_strategy
+          - release_test_plans
+      test_automation:
+        expected_score: 3
+        evidence:
+          - automated_regression_suite_growth
+          - flaky_test_reduction
+      api_and_integration_testing:
+        expected_score: 3
+        evidence:
+          - api_test_collections
+          - contract_test_reports
+      quality_governance:
+        expected_score: 3
+        evidence:
+          - quality_gate_definitions
+          - defect_triage_metrics
+      non_functional_testing:
+        expected_score: 2
+        evidence:
+          - performance_or_security_test_runs
+          - issue_remediation_tracking
+
+  ui_ux_designer:
+    capabilities:
+      user_research:
+        expected_score: 3
+        evidence:
+          - research_plans_and_summaries
+          - persona_or_job_to_be_done_artifacts
+      interaction_and_visual_design:
+        expected_score: 3
+        evidence:
+          - validated_wireframes_or_mockups
+          - design_system_component_usage
+      accessibility:
+        expected_score: 3
+        evidence:
+          - wcag_review_results
+          - accessibility_fix_followups
+      prototyping_and_validation:
+        expected_score: 3
+        evidence:
+          - prototype_test_outcomes
+          - iteration_notes
+      handoff_and_collaboration:
+        expected_score: 3
+        evidence:
+          - design_specs_for_engineering
+          - implementation_gap_reviews
+
+  it_infrastructure:
+    capabilities:
+      platform_operations:
+        expected_score: 3
+        evidence:
+          - uptime_and_sla_reports
+          - maintenance_change_records
+      backup_and_recovery:
+        expected_score: 3
+        evidence:
+          - restore_test_results
+          - backup_policy_compliance
+      monitoring_and_alerting:
+        expected_score: 3
+        evidence:
+          - actionable_alert_ratio
+          - mttr_improvement
+      automation_and_configuration:
+        expected_score: 3
+        evidence:
+          - automation_scripts_or_playbooks
+          - config_drift_reduction
+      resiliency_and_capacity:
+        expected_score: 3
+        evidence:
+          - capacity_forecast_accuracy
+          - dr_exercise_reports
+
+  network_and_security:
+    capabilities:
+      network_security_architecture:
+        expected_score: 3
+        evidence:
+          - segmentation_changes
+          - firewall_policy_reviews
+      identity_and_access:
+        expected_score: 3
+        evidence:
+          - privileged_access_reviews
+          - mfa_or_sso_adoption_metrics
+      detection_and_response:
+        expected_score: 3
+        evidence:
+          - siem_detection_rules
+          - incident_response_timelines
+      vulnerability_management:
+        expected_score: 3
+        evidence:
+          - critical_vulnerability_burn_down
+          - patch_sla_compliance
+      governance_and_awareness:
+        expected_score: 2
+        evidence:
+          - policy_updates
+          - awareness_campaign_metrics
+
+  database_administrator:
+    capabilities:
+      availability_and_recovery:
+        expected_score: 3
+        evidence:
+          - rpo_rto_test_results
+          - replication_health_reports
+      performance_tuning:
+        expected_score: 3
+        evidence:
+          - top_query_optimization_history
+          - latency_percentile_improvements
+      security_and_access:
+        expected_score: 3
+        evidence:
+          - access_audit_reports
+          - encryption_and_audit_settings
+      lifecycle_management:
+        expected_score: 3
+        evidence:
+          - upgrade_plan_and_execution
+          - patch_currency_metrics
+      operations_and_incident_handling:
+        expected_score: 3
+        evidence:
+          - incident_trends
+          - runbook_effectiveness
+
+  database_engineer:
+    capabilities:
+      data_modeling:
+        expected_score: 3
+        evidence:
+          - normalized_or_domain_models
+          - schema_review_notes
+      query_and_storage_optimization:
+        expected_score: 3
+        evidence:
+          - query_plan_improvements
+          - index_strategy_changes
+      data_pipeline_engineering:
+        expected_score: 3
+        evidence:
+          - pipeline_reliability_metrics
+          - sla_attainment
+      migration_and_versioning:
+        expected_score: 3
+        evidence:
+          - migration_rollout_reports
+          - rollback_success_cases
+      data_quality_and_governance:
+        expected_score: 3
+        evidence:
+          - quality_rule_coverage
+          - ownership_and_lineage_docs
+
+  ai_engineer:
+    capabilities:
+      use_case_and_solution_design:
+        expected_score: 3
+        evidence:
+          - problem_framing_docs
+          - architecture_decision_records
+      model_and_prompt_engineering:
+        expected_score: 3
+        evidence:
+          - prompt_eval_results
+          - model_comparison_reports
+      data_and_retrieval_pipeline:
+        expected_score: 3
+        evidence:
+          - rag_quality_metrics
+          - chunking_embedding_experiments
+      mlops_and_observability:
+        expected_score: 3
+        evidence:
+          - model_monitoring_dashboards
+          - latency_cost_quality_trends
+      safety_and_governance:
+        expected_score: 3
+        evidence:
+          - red_team_or_safety_tests
+          - policy_and_guardrail_implementation
+
+  devops_sre:
+    capabilities:
+      delivery_automation:
+        expected_score: 3
+        evidence:
+          - pipeline_reliability_metrics
+          - deployment_frequency_trends
+      reliability_engineering:
+        expected_score: 3
+        evidence:
+          - sla_slo_reports
+          - incident_reduction_trends
+      observability:
+        expected_score: 3
+        evidence:
+          - golden_signals_dashboards
+          - alert_noise_reduction
+      infrastructure_as_code:
+        expected_score: 3
+        evidence:
+          - reviewed_iac_changes
+          - drift_or_policy_compliance_reports
+      operational_readiness:
+        expected_score: 3
+        evidence:
+          - runbook_quality_reviews
+          - on_call_readiness_assessment
+
+  cloud_engineer:
+    capabilities:
+      cloud_platform_design:
+        expected_score: 3
+        evidence:
+          - reference_architecture_artifacts
+          - service_selection_decision_logs
+      cloud_security_and_iam:
+        expected_score: 3
+        evidence:
+          - iam_audit_results
+          - policy_compliance_trends
+      cost_and_capacity:
+        expected_score: 3
+        evidence:
+          - finops_reports
+          - cost_optimization_implementation_logs
+      automation_and_operations:
+        expected_score: 3
+        evidence:
+          - iac_coverage_ratio
+          - change_success_rate
+      resiliency_and_recovery:
+        expected_score: 3
+        evidence:
+          - dr_test_results
+          - backup_restore_evidence
+
+  it_support_service_desk:
+    capabilities:
+      intake_and_triage:
+        expected_score: 3
+        evidence:
+          - categorized_ticket_accuracy
+          - triage_sla_compliance
+      resolution_effectiveness:
+        expected_score: 3
+        evidence:
+          - first_contact_resolution_rate
+          - mean_time_to_resolution_trend
+      escalation_and_handoffs:
+        expected_score: 3
+        evidence:
+          - escalation_quality_reviews
+          - handoff_error_reduction
+      knowledge_management:
+        expected_score: 3
+        evidence:
+          - kb_article_usage_metrics
+          - repeat_issue_deflection_rate
+      customer_experience:
+        expected_score: 3
+        evidence:
+          - csat_trends
+          - ticket_reopen_rate_reduction
+
+  data_analyst:
+    capabilities:
+      data_query_and_preparation:
+        expected_score: 3
+        evidence:
+          - reproducible_sql_or_notebooks
+          - data_preparation_quality_checks
+      analytical_reasoning:
+        expected_score: 3
+        evidence:
+          - hypothesis_driven_analysis_reports
+          - decision_support_artifacts
+      visualization_and_storytelling:
+        expected_score: 3
+        evidence:
+          - dashboard_adoption_metrics
+          - stakeholder_feedback_on_clarity
+      metric_governance:
+        expected_score: 3
+        evidence:
+          - metric_dictionary_updates
+          - consistency_audit_results
+      experimentation_support:
+        expected_score: 2
+        evidence:
+          - experiment_readouts
+          - recommendation_implementation_outcomes
+
+  security_operations_soc:
+    capabilities:
+      detection_operations:
+        expected_score: 3
+        evidence:
+          - detection_rule_performance_reports
+          - true_positive_rate_trends
+      incident_response_execution:
+        expected_score: 3
+        evidence:
+          - incident_timeline_quality
+          - containment_and_recovery_metrics
+      log_and_case_management:
+        expected_score: 3
+        evidence:
+          - siem_data_quality_reports
+          - case_backlog_health
+      threat_hunting_and_proactive_defense:
+        expected_score: 2
+        evidence:
+          - hunting_reports
+          - newly_discovered_detection_use_cases
+      governance_and_reporting:
+        expected_score: 3
+        evidence:
+          - monthly_security_operations_reports
+          - audit_or_control_evidence_quality

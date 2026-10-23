@@ -1,0 +1,221 @@
+version: 1
+updated_at: 2026-04-19
+
+framework:
+  phase_30_days:
+    focus: foundations and role baseline
+  phase_60_days:
+    focus: guided execution and cross-team collaboration
+  phase_90_days:
+    focus: independent delivery and measurable impact
+
+paths:
+  software_engineer:
+    day_0_30:
+      - Complete language and framework fundamentals in stack.
+      - Build one API and one UI feature with tests.
+      - Follow team branching and code review standards.
+    day_31_60:
+      - Own one medium feature end-to-end.
+      - Add CI pipeline checks and basic observability.
+      - Resolve 3 production defects with root cause analysis.
+    day_61_90:
+      - Lead technical design for one sprint item.
+      - Improve performance, security, or reliability metric.
+      - Mentor one junior peer on coding standards.
+
+  product_owner_product_manager:
+    day_0_30:
+      - Understand product vision, users, and current roadmap.
+      - Audit backlog quality and define prioritization criteria.
+      - Publish one-page KPI baseline.
+    day_31_60:
+      - Run discovery for one top problem area.
+      - Refine stories with acceptance criteria and outcomes.
+      - Align engineering, design, and business stakeholders.
+    day_61_90:
+      - Launch one increment with measurable business value.
+      - Present roadmap update with tradeoff decisions.
+      - Improve one KPI and explain causality.
+
+  business_enablement:
+    day_0_30:
+      - Map key business processes and pain points.
+      - Identify compliance and governance dependencies.
+      - Build stakeholder map and communication plan.
+    day_31_60:
+      - Facilitate process redesign workshop.
+      - Publish operating model recommendations.
+      - Define value realization checkpoints.
+    day_61_90:
+      - Implement one prioritized process improvement.
+      - Measure throughput, quality, or cycle-time improvement.
+      - Standardize documentation and handoff templates.
+
+  quality_assurance:
+    day_0_30:
+      - Review test strategy and existing regression suite.
+      - Build smoke and API test coverage for critical paths.
+      - Align defect triage with engineering team.
+    day_31_60:
+      - Automate top regression scenarios.
+      - Introduce risk-based test planning.
+      - Add quality gates to CI pipeline.
+    day_61_90:
+      - Reduce escaped defects through root cause actions.
+      - Track and improve release readiness metrics.
+      - Establish test data and environment standards.
+
+  ui_ux_designer:
+    day_0_30:
+      - Audit current user journeys and design debt.
+      - Define core personas and usability hypotheses.
+      - Align with PM and engineering on design constraints.
+    day_31_60:
+      - Deliver validated prototypes for one key flow.
+      - Improve accessibility compliance on key screens.
+      - Create reusable components in design system.
+    day_61_90:
+      - Measure UX changes against product metrics.
+      - Reduce handoff friction with clear specs and tokens.
+      - Run a structured usability test and action plan.
+
+  it_infrastructure:
+    day_0_30:
+      - Baseline current infrastructure inventory and risks.
+      - Validate backup, restore, and patch status.
+      - Confirm monitoring coverage for critical services.
+    day_31_60:
+      - Automate one repetitive operational workflow.
+      - Improve alert quality and incident response playbooks.
+      - Address top availability bottlenecks.
+    day_61_90:
+      - Deliver one resiliency improvement initiative.
+      - Test disaster recovery scenario and report results.
+      - Define capacity plan for next quarter.
+
+  network_and_security:
+    day_0_30:
+      - Review network segmentation and access posture.
+      - Baseline vulnerability and patch metrics.
+      - Validate incident response escalation workflow.
+    day_31_60:
+      - Harden firewall and IAM policies for critical assets.
+      - Integrate logs into SIEM and tune key detections.
+      - Run tabletop incident drill.
+    day_61_90:
+      - Reduce mean time to detect and respond.
+      - Close high-risk vulnerabilities with documented evidence.
+      - Publish security control maturity improvement plan.
+
+  database_administrator:
+    day_0_30:
+      - Audit backup, restore, and access controls.
+      - Baseline performance and capacity metrics.
+      - Confirm patch and version posture.
+    day_31_60:
+      - Optimize top slow queries and indexes.
+      - Strengthen replication and high-availability checks.
+      - Improve monitoring thresholds and runbooks.
+    day_61_90:
+      - Execute restore drill with recovery objectives.
+      - Reduce incidents caused by configuration drift.
+      - Create quarterly upgrade and capacity roadmap.
+
+  database_engineer:
+    day_0_30:
+      - Review schemas and data quality pain points.
+      - Baseline query performance and pipeline reliability.
+      - Document current migration workflow.
+    day_31_60:
+      - Refactor one schema or ETL flow for performance.
+      - Add data validation checks in pipelines.
+      - Improve migration rollback strategy.
+    day_61_90:
+      - Deliver one cross-system data integration safely.
+      - Improve latency and cost metrics.
+      - Publish data model and ownership standards.
+
+  ai_engineer:
+    day_0_30:
+      - Define AI use case scope, constraints, and success metrics.
+      - Build baseline prototype and evaluation criteria.
+      - Set data governance and safety requirements.
+    day_31_60:
+      - Implement retrieval and prompt optimization cycle.
+      - Establish offline and online quality evaluations.
+      - Add observability for latency, cost, and output quality.
+    day_61_90:
+      - Ship one production-grade AI feature.
+      - Improve model quality using feedback loop.
+      - Create AI risk register and mitigation controls.
+
+  devops_sre:
+    day_0_30:
+      - Baseline deployment, incident, and reliability metrics.
+      - Audit CI/CD and infrastructure-as-code coverage.
+      - Map critical services and ownership.
+    day_31_60:
+      - Improve pipeline reliability and lead time.
+      - Add golden signals dashboards and alert tuning.
+      - Run one incident simulation and retrospective.
+    day_61_90:
+      - Deliver one reliability improvement with measurable impact.
+      - Standardize runbooks and on-call readiness.
+      - Implement automated rollback or canary guardrails.
+
+  cloud_engineer:
+    day_0_30:
+      - Assess cloud landing zone, IAM, and network posture.
+      - Baseline cost, security, and availability indicators.
+      - Review backup and disaster recovery readiness.
+    day_31_60:
+      - Implement infrastructure-as-code for key resources.
+      - Optimize top cloud cost drivers with tagged ownership.
+      - Improve monitoring and policy compliance automation.
+    day_61_90:
+      - Complete one migration or modernization milestone.
+      - Reduce cloud risk and cost variance against baseline.
+      - Publish cloud operations standards for the team.
+
+  it_support_service_desk:
+    day_0_30:
+      - Analyze ticket categories, SLAs, and escalation paths.
+      - Standardize intake and triage checklist.
+      - Improve knowledge base coverage for frequent issues.
+    day_31_60:
+      - Automate responses for repetitive ticket patterns.
+      - Reduce mean time to resolution on top issue classes.
+      - Improve first-contact resolution through targeted coaching.
+    day_61_90:
+      - Establish service quality dashboard and review cadence.
+      - Reduce reopen rate and escalation defects.
+      - Harden handoff process with clear ownership rules.
+
+  data_analyst:
+    day_0_30:
+      - Align business questions with data definitions.
+      - Build baseline dashboard with trusted metrics.
+      - Profile data quality issues and remediation plan.
+    day_31_60:
+      - Deliver one decision-grade analysis tied to business KPI.
+      - Improve dashboard adoption with stakeholder enablement.
+      - Introduce validation checks for recurring reports.
+    day_61_90:
+      - Create repeatable analysis pipeline for priority domain.
+      - Improve metric consistency across teams.
+      - Publish analyst playbook for experiment and insight quality.
+
+  security_operations_soc:
+    day_0_30:
+      - Baseline detection coverage and incident response metrics.
+      - Review critical log sources and SIEM ingestion quality.
+      - Validate escalation runbooks and contact matrix.
+    day_31_60:
+      - Tune high-noise detection rules and reduce false positives.
+      - Improve response workflow with case enrichment automation.
+      - Run one tabletop exercise for high-priority threat scenario.
+    day_61_90:
+      - Reduce mean time to detect and respond measurably.
+      - Increase detection quality with threat hunting findings.
+      - Publish quarterly SOC improvement and risk trend report.

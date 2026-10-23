@@ -4,3 +4,4 @@ local/
 Thumbs.db
 node_modules/
 package-lock.json
+service.json
