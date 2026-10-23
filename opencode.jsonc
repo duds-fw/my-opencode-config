@@ -82,10 +82,64 @@
     "./skills"
   ],
 
-  "plugins": [],
+  "plugins": [
+    "./plugins/caveman-native.js",
+    "./plugins/caveman-blocks.js",
+    "./plugins/rtk.ts"
+  ],
 
   "mcp": {
-    "servers": {}
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      },
+      "deepwiki": {
+        "type": "remote",
+        "url": "https://mcp.deepwiki.com/mcp"
+      },
+      "playwright": {
+        "type": "local",
+        "command": ["npx", "-y", "@playwright/mcp"]
+      },
+      "sequential-thinking": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+      },
+      "memory": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+      },
+      "filesystem": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/home/opencode"]
+      },
+      "docker": {
+        "type": "local",
+        "command": ["npx", "-y", "mcp-docker-server"]
+      },
+      "database": {
+        "type": "local",
+        "command": ["npx", "-y", "@cocaxcode/database-mcp"]
+      },
+      "git": {
+        "type": "local",
+        "command": ["npx", "-y", "@modelcontextprotocol/server-git"]
+      },
+      "ssh": {
+        "type": "local",
+        "command": ["npx", "-y", "ssh-mcp", "--host=127.0.0.1", "--user=root", "--disableSudo"]
+      },
+      "android": {
+        "type": "local",
+        "command": ["npx", "-y", "android-mcp-server"]
+      },
+      "caveman": {
+        "type": "local",
+        "command": ["/root/.caveman/bin/caveman-mcp"],
+        "enabled": true
+      }
+    }
   },
 
   "instructions": [
