@@ -88,12 +88,6 @@
           "effect": "allow"
         }
       ]
-    },
-    "general": {
-      "mode": "subagent"
-    },
-    "explore": {
-      "mode": "subagent"
     }
   },
   "commands": {
@@ -111,6 +105,11 @@
     }
   },
   "permissions": [
+    {
+      "action": "skill",
+      "resource": "*",
+      "effect": "deny"
+    },
     {
       "action": "edit",
       "resource": "*",
