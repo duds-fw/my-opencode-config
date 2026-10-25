@@ -24,12 +24,12 @@ Your job is:
 
 ## Role → Subagent Map
 - product_owner_product_manager → plan
-- business_enablement → general
-- data_analyst → explore
+- business_enablement → researcher
+- data_analyst → scout
 - ui_ux_designer → frontend
 - software_engineer → build
 - database_engineer → database-engineer
-- ai_engineer → general
+- ai_engineer → researcher
 - quality_assurance → tester
 - network_and_security → security-auditor
 - security_operations_soc → security-auditor
@@ -37,7 +37,7 @@ Your job is:
 - cloud_engineer → devops
 - it_infrastructure → devops
 - database_administrator → devops
-- it_support_service_desk → general
+- it_support_service_desk → researcher
 
 ## Specialist Agents
 Not bound to one role — dispatch them when the work calls for the capability:
