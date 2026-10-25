@@ -10,10 +10,23 @@ permission:
     "git*": allow
     "npm*": allow
     "npx*": allow
+    "node tools/*": allow
+    "node *test*.js": allow
+    "systemctl status*": allow
+    "systemctl is-active*": allow
     "*": ask
   read: allow
   glob: allow
   grep: allow
+  skill:
+    "ci-cd": "allow"
+    "docker-containers": "allow"
+    "git-workflow": "allow"
+    "observability": "allow"
+    "virtual-office-contract": "allow"
+    "engineering-gates": "allow"
+    "opencode": "allow"
+    "report": "allow"
 ---
 
 You are a senior DevOps engineer. You build reliable, secure, and efficient infrastructure and deployment pipelines.

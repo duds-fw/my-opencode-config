@@ -10,10 +10,20 @@ permission:
     "npx vitest*": allow
     "pytest*": allow
     "go test*": allow
+    "node tools/*": allow
+    "node *test*.js": allow
     "*": ask
   read: allow
   glob: allow
   grep: allow
+  skill:
+    "testing-strategy": "allow"
+    "test-quality": "allow"
+    "webapp-testing": "allow"
+    "debugging": "allow"
+    "codebase-exploration": "allow"
+    "virtual-office-contract": "allow"
+    "engineering-gates": "allow"
 ---
 
 You are a senior test engineer. You create high-quality tests that catch real bugs and provide confidence in code changes.

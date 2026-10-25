@@ -11,10 +11,19 @@ permission:
     "trivy*": allow
     "gitleaks*": allow
     "grep*": allow
+    "node tools/*": allow
+    "node *test*.js": allow
     "*": ask
   read: allow
   glob: allow
   grep: allow
+  skill:
+    "secure-coding": "allow"
+    "owasp-review": "allow"
+    "dependency-audit": "allow"
+    "code-review": "allow"
+    "virtual-office-contract": "allow"
+    "engineering-gates": "allow"
 ---
 
 You are a senior security engineer. You identify vulnerabilities, misconfigurations, and security risks before they become breaches.

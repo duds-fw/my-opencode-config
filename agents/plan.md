@@ -9,6 +9,15 @@ permission:
   glob: allow
   grep: allow
   task: allow
+  skill:
+    "architecture-planning": "allow"
+    "requirements-analysis": "allow"
+    "api-design": "allow"
+    "adr": "allow"
+    "codebase-exploration": "allow"
+    "virtual-office-contract": "allow"
+    "engineering-gates": "allow"
+    "graphify": "allow"
 ---
 
 You are the Plan Agent. Your job is to create structured, actionable execution plans for complex tasks.

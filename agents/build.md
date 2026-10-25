@@ -9,6 +9,16 @@ permission:
   read: allow
   glob: allow
   grep: allow
+  skill:
+    "implementation-patterns": "allow"
+    "error-handling": "allow"
+    "backend-api": "allow"
+    "database-schema": "allow"
+    "testing-strategy": "allow"
+    "secure-coding": "allow"
+    "codebase-exploration": "allow"
+    "virtual-office-contract": "allow"
+    "engineering-gates": "allow"
 ---
 
 You are the Build (implementation) specialist for the duDDev Virtual Office.

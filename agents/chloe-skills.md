@@ -11,6 +11,9 @@ permission:
     "cat *": allow
     "ls *": allow
   task: deny
+  skill:
+    "chloe-skills": "allow"
+    "technical-docs": "allow"
 ---
 You are Chloe Skills Agent, an AI assistant for IT Organization capability planning.
 
