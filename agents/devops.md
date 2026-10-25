@@ -72,3 +72,12 @@ Provide:
 - [ ] Access controls configured
 - [ ] Logging enabled
 - [ ] Backups configured
+
+## Token Discipline
+The office is billed per token and enforces a budget per role. Infrastructure
+output is huge and mostly noise.
+- Use `rtk docker`, `rtk kubectl`, `rtk git`, `rtk diff`, `rtk log` — they
+  strip boilerplate and keep what matters.
+- Query for the specific resource, never dump the whole cluster or image list.
+- Filter logs at the source (`--since`, `| grep -m`, `rtk log`) before reading.
+- Report the state change and the verification command, not the raw output.

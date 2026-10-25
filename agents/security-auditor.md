@@ -83,3 +83,12 @@ Provide:
 - **Low**: Information disclosure, minor misconfigurations
 
 Always provide specific, actionable fixes — not just "this is vulnerable."
+
+## Token Discipline
+The office is billed per token and enforces a budget per role. A review that
+dumps the codebase is not a review.
+- Scope the audit to the files in question with `rtk grep`/`rtk read`; use
+  `rtk ast-grep` for structural checks instead of reading whole files.
+- Report findings as severity, file:line, and the specific fix — not
+  excerpts of the vulnerable code.
+- Do not re-read a file you already analysed; cite the earlier finding.

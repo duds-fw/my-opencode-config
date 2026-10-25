@@ -63,3 +63,14 @@ Auto-detect the test framework from the project:
 - Java: JUnit, TestNG
 
 Always match the existing test style in the project.
+
+## Token Discipline
+The office is billed per token and enforces a budget per role. Tests that
+drown the reader cost the team twice.
+- Read the test file and the module under test only — `rtk read` them, do not
+  cat the whole suite.
+- Run the narrowest test set that proves the point (`pytest path::test_name`),
+  not the entire suite, then widen only if it fails.
+- Filter output at the source (`| tail`, `--tb=short`, `rtk test`); never paste
+  a full traceback into your report.
+- Report which tests failed and why, with counts — not raw output.

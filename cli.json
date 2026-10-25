@@ -15,8 +15,8 @@
     "scope": "global"
   },
   "keybinds": {
-    "input_submit": "ctrl+return",
-    "input_newline": "return,shift+return,alt+return,ctrl+j"
+    "input.submit": "ctrl+return",
+    "input.newline": "return,shift+return,alt+return,ctrl+j"
   },
   "terminal": {
     "title": true,

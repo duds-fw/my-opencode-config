@@ -1,8 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
-
   "default_agent": "orchestrator",
-
+  "subagent_depth": 2,
+  "experimental": {
+    "subagent_depth": 2
+  },
+  "model": {
+    "providerID": "minimax-coding-plan",
+    "model": "MiniMax-M3.1-Flash"
+  },
+  "small_model": "opencode-go/glm-5.3-flash",
   "agents": {
     "build": {
       "mode": "primary"
@@ -11,24 +18,72 @@
       "description": "Auto-pilot orchestrator. Classifies user requests and routes to the best specialist agent automatically.",
       "mode": "primary",
       "permissions": [
-        { "action": "edit", "resource": "*", "effect": "allow" },
-        { "action": "read", "resource": "*", "effect": "allow" },
-        { "action": "glob", "resource": "*", "effect": "allow" },
-        { "action": "grep", "resource": "*", "effect": "allow" },
-        { "action": "subagent", "resource": "*", "effect": "allow" },
-        { "action": "shell", "resource": "*", "effect": "ask" }
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "ask"
+        }
       ]
     },
     "plan": {
       "description": "Plan agent. Creates structured execution plans for multi-step tasks.",
       "mode": "subagent",
       "permissions": [
-        { "action": "edit", "resource": "*", "effect": "deny" },
-        { "action": "shell", "resource": "*", "effect": "deny" },
-        { "action": "read", "resource": "*", "effect": "allow" },
-        { "action": "glob", "resource": "*", "effect": "allow" },
-        { "action": "grep", "resource": "*", "effect": "allow" },
-        { "action": "subagent", "resource": "*", "effect": "allow" }
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "shell",
+          "resource": "*",
+          "effect": "deny"
+        },
+        {
+          "action": "read",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "glob",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "grep",
+          "resource": "*",
+          "effect": "allow"
+        },
+        {
+          "action": "subagent",
+          "resource": "*",
+          "effect": "allow"
+        }
       ]
     },
     "general": {
@@ -38,7 +93,6 @@
       "mode": "subagent"
     }
   },
-
   "commands": {
     "review": {
       "description": "Review staged changes for issues",
@@ -53,41 +107,121 @@
       "template": "Analyze $ARGUMENTS and suggest/generate tests covering missing cases, edge cases, and proper assertions."
     }
   },
-
   "permissions": [
-    { "action": "edit", "resource": "*", "effect": "allow" },
-    { "action": "read", "resource": "*", "effect": "allow" },
-    { "action": "glob", "resource": "*", "effect": "allow" },
-    { "action": "grep", "resource": "*", "effect": "allow" },
-    { "action": "shell", "resource": "git *", "effect": "allow" },
-    { "action": "shell", "resource": "npm *", "effect": "allow" },
-    { "action": "shell", "resource": "npx *", "effect": "allow" },
-    { "action": "shell", "resource": "bun *", "effect": "allow" },
-    { "action": "shell", "resource": "bunx *", "effect": "allow" },
-    { "action": "shell", "resource": "ls *", "effect": "allow" },
-    { "action": "shell", "resource": "cat *", "effect": "allow" },
-    { "action": "shell", "resource": "mkdir *", "effect": "allow" },
-    { "action": "shell", "resource": "cp *", "effect": "allow" },
-    { "action": "shell", "resource": "echo *", "effect": "allow" },
-    { "action": "shell", "resource": "pwd", "effect": "allow" },
-    { "action": "shell", "resource": "which *", "effect": "allow" },
-    { "action": "shell", "resource": "rm *", "effect": "ask" },
-    { "action": "shell", "resource": "rm -rf *", "effect": "deny" },
-    { "action": "shell", "resource": "*", "effect": "ask" },
-    { "action": "webfetch", "resource": "*", "effect": "allow" },
-    { "action": "websearch", "resource": "*", "effect": "allow" }
+    {
+      "action": "edit",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "glob",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "grep",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "npm *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "npx *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "bun *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "bunx *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "ls *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "cat *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "mkdir *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "cp *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "echo *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "pwd",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "which *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "rm *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "webfetch",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "websearch",
+      "resource": "*",
+      "effect": "allow"
+    }
   ],
-
   "skills": [
     "./skills"
   ],
-
   "plugins": [
     "./plugins/caveman-native.js",
     "./plugins/caveman-blocks.js",
     "./plugins/rtk.ts"
   ],
-
   "mcp": {
     "servers": {
       "context7": {
@@ -100,54 +234,100 @@
       },
       "playwright": {
         "type": "local",
-        "command": ["npx", "-y", "@playwright/mcp"]
+        "command": [
+          "npx",
+          "-y",
+          "@playwright/mcp"
+        ]
       },
       "sequential-thinking": {
         "type": "local",
-        "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-sequential-thinking"
+        ]
       },
       "memory": {
         "type": "local",
-        "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-memory"
+        ]
       },
       "filesystem": {
         "type": "local",
-        "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/home/opencode"]
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "/home/opencode"
+        ]
       },
       "docker": {
         "type": "local",
-        "command": ["npx", "-y", "mcp-docker-server"]
+        "command": [
+          "npx",
+          "-y",
+          "mcp-docker-server"
+        ]
       },
       "database": {
         "type": "local",
-        "command": ["npx", "-y", "@cocaxcode/database-mcp"]
+        "command": [
+          "npx",
+          "-y",
+          "@cocaxcode/database-mcp"
+        ]
       },
       "git": {
         "type": "local",
-        "command": ["npx", "-y", "@modelcontextprotocol/server-git"]
+        "command": [
+          "npx",
+          "-y",
+          "@modelcontextprotocol/server-git"
+        ]
       },
       "ssh": {
         "type": "local",
-        "command": ["npx", "-y", "ssh-mcp", "--host=127.0.0.1", "--user=root", "--disableSudo"]
+        "command": [
+          "npx",
+          "-y",
+          "ssh-mcp",
+          "--host=127.0.0.1",
+          "--user=root",
+          "--disableSudo"
+        ]
       },
       "android": {
         "type": "local",
-        "command": ["npx", "-y", "android-mcp-server"]
+        "command": [
+          "npx",
+          "-y",
+          "android-mcp-server"
+        ]
       },
       "caveman": {
         "type": "local",
-        "command": ["/root/.caveman/bin/caveman-mcp"],
+        "command": [
+          "/root/.caveman/bin/caveman-mcp"
+        ],
         "enabled": true
       }
     }
   },
-
   "instructions": [
     "AGENTS.md",
     "README.md"
   ],
-
   "compaction": {
-    "auto": true
-  }
+    "auto": true,
+    "prune": true,
+    "keep": {
+      "tokens": 8000
+    },
+    "buffer": 20000
+  },
+  "provider": {}
 }

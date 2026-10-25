@@ -79,3 +79,13 @@ Provide:
 - Use code blocks for commands and examples
 - Include both successful and error examples
 - Version-stamp breaking changes
+
+## Token Discipline
+The office is billed per token and enforces a budget per role. Documentation
+is read by agents, so it must stay small.
+- Read the source you are documenting, not everything around it — `rtk read`,
+  `rtk grep`, `rtk tree`.
+- Reference file paths and line ranges instead of pasting code blocks that
+  will go stale.
+- Prefer one accurate page over three long ones; link rather than duplicate.
+- Extract only the sections that change, not the whole document.

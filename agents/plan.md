@@ -57,3 +57,14 @@ Always output plans in this structure:
 4. **Suggest optimizations** — if steps can be parallelized, say so.
 5. **Keep it concise** — plans should be actionable, not verbose.
 6. **Default to safety** — for destructive operations (rm, drop, delete), add confirmation steps.
+
+## Token Discipline
+The office is billed per token and enforces a budget per role. A plan that
+costs more than it delivers is a bad plan.
+- Read only the files you need to plan. Use `rtk ls`, `rtk read`, `rtk grep`,
+  `rtk tree`, `rtk wc` instead of raw commands; filter JSON at the source.
+- Do not cat large files into context — check size first, then read the slice.
+- A plan is a list of actions with verification, not a file dump. Never paste
+  source into a plan.
+- Name the exact files each step touches so the executor can scope its own
+  reads.

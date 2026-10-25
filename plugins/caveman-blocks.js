@@ -33,19 +33,27 @@ function hook(req) {
   }
 }
 
-export const CavemanBlocks = async ({ directory }) => {
-  const hints = new Map(); // callID -> hint from the pre phase, delivered after the call
-  return {
-    "tool.execute.before": async (input, output) => {
-      if (input.tool !== "bash") return;
-      const command = String(output.args?.command ?? "");
-      const hint = hook({ phase: "pre", session: input.sessionID, call_id: input.callID, cwd: output.args?.workdir || directory, command });
-      if (hint) hints.set(input.callID, hint);
-    },
-    "tool.execute.after": async (input, output) => {
-      const hint = hints.get(input.callID);
-      hints.delete(input.callID);
-      if (hint) output.output = `${output.output}\n\n${hint}`;
-    },
-  };
+export default {
+  id: "caveman-blocks",
+  async setup(ctx) {
+    const hints = new Map(); // callID -> hint from the pre phase, delivered after the call
+    const directory = ctx.location?.directory;
+
+    await ctx.tool.hook("execute.before", (event) => {
+      if (event.tool !== "bash") return;
+      const command = String(event.input?.command ?? "");
+      const hint = hook({ phase: "pre", session: event.sessionID, call_id: event.callID, cwd: event.input?.workdir || directory, command });
+      if (hint) hints.set(event.callID, hint);
+    });
+
+    await ctx.tool.hook("execute.after", (event) => {
+      const hint = hints.get(event.callID);
+      hints.delete(event.callID);
+      if (hint) {
+        const prev = event.result;
+        const content = typeof prev === "string" ? prev : (prev?.content ?? "");
+        event.result = { ...(typeof prev === "object" && prev ? prev : {}), content: `${content}\n\n${hint}` };
+      }
+    });
+  },
 };
