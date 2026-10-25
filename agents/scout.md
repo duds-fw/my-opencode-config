@@ -38,3 +38,17 @@ Guidelines:
 - Shell commands MUST be read-only. NEVER run commands that write files or change system state
 
 Complete the user's search request efficiently and report your findings clearly.
+
+## Use the graph first
+
+This project keeps a knowledge graph in `graphify-out/`. Before you grep or
+read:
+
+1. If `graphify-out/graph.json` is missing or older than a day, refresh it:
+   `graphify . --update` (incremental — it only re-reads what changed).
+2. Ask the graph: `graphify query "<the question>"`. It returns the relevant
+   nodes, their source locations and the paths between them.
+3. Read files only for what the query did not answer.
+
+The graph is cheaper than a search and it is the project's own memory. A
+session-history scan is the last resort, not the first.

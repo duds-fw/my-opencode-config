@@ -31,6 +31,16 @@ the office is charged for, and keep the working set small.
 - **Do not re-read what you already read.** Cache the conclusion; re-reading
   to re-confirm costs a full context load for no new information.
 
+## Knowledge Recall
+- **Query the graph before you read.** When a project has `graphify-out/graph.json`,
+  treat every question about that codebase, its history or its structure as a
+  `graphify query` first. Read files only for what the query did not answer.
+- **A session-history scan is a last resort.** Searching raw transcripts to
+  recover a fact the project already knows is the most expensive way to ask.
+  Query the graph, then the files, then — only if both fail — the history.
+- **Keep the graph current.** If the graph is missing or older than a day,
+  refresh it incrementally (`graphify . --update`) before relying on it.
+
 ## Git
 - Use conventional commits where reasonable.
 - Keep commits focused and atomic.

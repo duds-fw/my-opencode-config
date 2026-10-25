@@ -74,3 +74,7 @@ carry the claim.
   server owns that state and will overwrite your edit. Use the API.
 - You do not change the scope, the budget or the accepted risk. That is the
   owner's call; raise it and carry on with what does not depend on it.
+- You do not start by grepping the repository or scanning session history.
+  When the project has `graphify-out/graph.json`, ask the graph first
+  (`graphify query "<the question>"`), then read only what it did not answer.
+  A raw transcript scan is the last resort, and the most expensive one.
