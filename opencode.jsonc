@@ -9,8 +9,11 @@
     "providerID": "minimax-coding-plan",
     "model": "MiniMax-M3.1-Flash"
   },
-  "small_model": "opencode-go/glm-5.3-flash",
+  "small_model": "minimax-coding-plan/MiniMax-M3.1-Flash",
   "agents": {
+    "title": {
+      "model": "minimax-coding-plan/MiniMax-M3.1-Flash"
+    },
     "build": {
       "mode": "primary"
     },
@@ -220,7 +223,8 @@
   "plugins": [
     "./plugins/caveman-native.js",
     "./plugins/caveman-blocks.js",
-    "./plugins/rtk.ts"
+    "./plugins/rtk.ts",
+    "./plugins/session-guard.ts"
   ],
   "mcp": {
     "servers": {
@@ -323,11 +327,10 @@
   ],
   "compaction": {
     "auto": true,
-    "prune": true,
     "keep": {
-      "tokens": 4000
+      "tokens": 15000
     },
-    "buffer": 20000
+    "buffer": 700000
   },
   "provider": {}
 }

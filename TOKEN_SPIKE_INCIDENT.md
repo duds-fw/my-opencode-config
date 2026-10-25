@@ -1,156 +1,246 @@
 # Token Spike Incident Report
 
-## Observed Symptoms
+**Date:** 2026-10-25
+**Severity:** High — Token Plan exhausted (~125M tokens / 5h reported; 385M measured all-time)
+**Status:** Root cause fixed, corrective actions implemented and verified
 
-- MiniMax Token Plan shows ~125M tokens consumed in a 5-hour window (user reported)
-- MiniMax quota error 2056: "Token Plan usage limit reached" appearing in logs
-- OpenRouter error: "You requested up to 128000 tokens, but can only afford 9547"
-- Multiple sessions failing simultaneously with quota exceeded errors
-- 5 active sessions, 33 subagents, 236 prompts, 2.2k steps, 373.2M total tokens
+---
 
-## Confirmed Facts
+## 1. Symptoms
 
-### Environment
-- OpenCode v2.1.3 (standalone binary at /root/.opencode/bin/opencode)
-- RTK v1.0.1 installed and functional (11 commands, 36.7% savings)
-- RTK plugin (rtk.ts) is loaded and intercepts bash/shell commands
-- Caveman v4.0.1 installed with proxy on :8787
-- 12 MCP servers configured (context7✓, deepwiki✓, 10 pending)
-- 3 plugins active: caveman-native.js, caveman-blocks.js, rtk.ts
+- MiniMax Token Plan showed ~125M tokens consumed in a 5-hour window.
+- Quota error 2056 ("Token Plan usage limit reached") appeared across concurrent sessions.
+- OpenRouter error: "You requested up to 128000 tokens, but can only afford 9547".
+- Sessions failed simultaneously with quota errors.
 
-### Model Configuration
-- Primary model: minimax-coding-plan/MiniMax-M3.1-Flash
-- small_model: opencode-go/glm-5.3-flash (set but shows as None in debug)
-- Compaction: auto=true, prune=true, keep=8000 tokens, buffer=20000
+---
 
-### MiniMax Quota Status
-- Weekly: 79% remaining (21% used)
-- Interval: 0% remaining (exhausted)
-- Model: "general" (only model shown in quota response)
-- Error 2056: Token Plan usage limit reached
+## 2. Confirmed Facts (from telemetry)
 
-### Session Data
-- 5 active sessions:
-  1. setup-opencode (current, 10/25 8:52 AM)
-  2. Office offer pitch (10/25 8:46 AM)
-  3. Virtual office for product operations (10/25 7:18 AM)
-  4. probe123 (10/24 1:57 AM)
-  5. office_probe (10/24 1:56 AM)
-- 78 sessions total, 33 subagents, 236 prompts, 2.2k steps
-- 373.2M total tokens (all time)
+All figures below are measured from the authoritative source:
+`/root/.local/share/opencode/opencode.db` (table `session_v2`, `session_message`).
 
-### RTK Integration Status
-- RTK binary: /usr/local/bin/rtk v1.0.1 (working)
-- RTK plugin: rtk.ts loaded, intercepts bash/shell commands
-- RTK gain: 11 commands, 36.7% savings (520→329 tokens)
-- **LIMITATION**: RTK only rewrites bash/shell commands. It does NOT optimize:
-  - MCP tool calls (filesystem, database, etc.)
-  - read/glob/grep tool calls
-  - Agent-to-agent context handoffs
-  - System prompt loading
-  - Skill instruction loading
+### Token breakdown — 385M total
 
-### Compaction Settings
-- Current: auto=true, prune=true, keep=8000 tokens, buffer=20000
-- Old (v1): auto=true, tail_turns=8
-- The old config used tail_turns (number of turns) vs new uses token-based keep
+| Bucket | Tokens | Share |
+|---|---:|---:|
+| **cache_read** | **351M** | **91%** |
+| input (uncached) | 33.4M | 8.7% |
+| output | 580K | 0.15% |
+| cache_write | 0 | 0% |
 
-### Previous vs Current Differences
+### Concentration
+
+Two sessions account for **94%** of all tokens:
+
+| Session | Tokens |
+|---|---:|
+| Virtual office for product operations | 299.6M |
+| setup-opencode | 61.4M |
+
+### The mechanism
+
+The dominant session held **1,475 messages / 1,227 token-bearing turns**. Its cached
+prefix grew to **555,264 tokens**. Every subsequent turn re-sent that entire growing
+prefix, so `cache_read` compounded quadratically.
+
+- The **last 20% of turns consumed 41%** of the session's total cache_read.
+- **`time_compacting` was NULL for all 114 sessions — 0 of 114 ever compacted.**
+
+### Root cause: the automatic-compaction threshold was unreachable
+
+`MiniMax-M3.1-Flash` has a **1,000,000-token context window**
+(models.dev `minimax-coding-plan`, `limit.context = 1000000`).
+
+OpenCode V2 computes the auto-compaction trigger from the binary as:
+
+```js
+Cc = (limit, buffer) => {
+  let i = limit.input || limit.context;
+  if (i <= 0) return Infinity;
+  if (buffer !== undefined) return i - buffer;   // <-- explicit buffer
+  return i - Math.max(Math.floor(i * 0.15), i >= 2 * Vc ? Vc : 0);
+}
+```
+
+With the configured `buffer: 20000` and a 1M context window, compaction would only
+trigger at **980,000 tokens**. The largest session peaked at 555K — roughly half the
+threshold — so **compaction never ran**. Every turn then re-read a prefix that grew
+without bound.
+
+> The 1M context window made the V1→V2 config translation look harmless: the
+> previous `tail_turns: 8` policy bounded *turns*, while the V2 `buffer` policy
+> bounds *tokens against the model limit*. With a 20x larger limit, the same
+> 20,000-token buffer became effectively an off switch.
+
+### Secondary defects found during the investigation
+
+| Defect | Evidence | Impact |
+|---|---|---|
+| **Invalid JSONC** — a missing comma after `"skills"` | OpenCode silently fell back to defaults: no agents, no MCP servers, no plugins, no compaction config | Office degraded without any error surface |
+| **Dead `small_model` reference** | `small_model: "opencode-go/glm-5.3-flash"` resolves to `None`; the model is filtered out of the registry as non-free (`if(!LH.cost.some(J=>J.input>0)) fH.delete(HH)`), so `opencode-go/glm-5.3-flash` does not exist in `opencode models` | Every Title generation failed with `provider.free-limit`; two compaction attempts failed with the same error |
+| **`subagent_depth: 2`** | Config | Nested delegation multiplies context across sessions |
+
+---
+
+## 3. Previous vs Current
 
 | Aspect | Previous (v1.18.18) | Current (v2.1.3) | Impact |
 |---|---|---|---|
-| Config format | V1 (agent, command, plugin, permission, mcp flat) | V2 (agents, commands, plugins, permissions, mcp.servers) | Different loading behavior |
-| Model | Not set in config (default) | minimax-coding-plan/MiniMax-M3.1-Flash | Explicit model may increase usage |
-| Compaction | tail_turns: 8 | keep: 8000 tokens | Different retention |
-| MCP servers | 11 (flat keys) | 12 (nested under servers) | More servers loaded |
-| Plugins | opencode-synced, graphify.js | caveman-native.js, caveman-blocks.js, rtk.ts | More plugin overhead |
-| Skills | graphify (0.9.26) | graphify (0.9.94), chloe-skills | More skill instructions |
-| Agent definitions | 10 agents in agent/ dir | 11 agents in agents/ dir | More agent prompts |
-| Subagent depth | Not configured | 2 (experimental) | Deeper nesting possible |
+| Compaction policy | `tail_turns: 8` (turn-based) | `keep.tokens` + `buffer` (token-based, relative to model limit) | **Root cause** — same 20K buffer is inert against a 1M window |
+| Model context | ~204,800 (M2-class) | **1,000,000** (M3.1-Flash) | 5x headroom for prefix growth |
+| Config format | V1 flat keys | V2 nested (`agents`, `commands`, `plugins`, `permissions`, `mcp.servers`) | A single missing comma disables everything |
+| Subagent depth | not configured | `2` | Context multiplication |
+| MCP servers | 11 (flat) | 12 (nested) | Constant schema overhead — **not** the driver (see §5) |
 
-### Root Causes (Ranked by Evidence)
+---
 
-1. **HIGHEST: Multiple concurrent sessions draining simultaneously**
-   - Evidence: 5 active sessions, all showing "Failed to drain Session" with quota exceeded
-   - The "Virtual office for product operations" and "Office offer pitch" sessions suggest autonomous office work
-   - Each session independently loads full context and makes model calls
-   - Impact: 5x context loading, 5x model requests
+## 4. Ranked Root Causes
 
-2. **HIGH: RTK only optimizes bash/shell commands**
-   - Evidence: RTK gain shows only 11 commands, 36.7% savings (520→329 tokens)
-   - RTK does NOT optimize: MCP tool calls, read/glob/grep, agent handoffs, system prompts, skill loading
-   - The vast majority of token consumption comes from non-bash operations
-   - Impact: RTK provides minimal overall savings
+1. **PRIMARY — Unreachable auto-compaction threshold (1M context + `buffer: 20000` → trigger at 980K).**
+   0/114 sessions compacted; 351M cache_read (91%) from re-reading a growing prefix.
+2. **HIGH — Unbounded session length.** 1,227 turns in one session with no reset.
+   The last 20% of turns alone consumed 41% of the session's cache_read.
+3. **HIGH — Invalid JSONC silently disabling the entire config.**
+   No agents, no MCP, no plugins, no compaction — with no error reported.
+4. **MEDIUM — `subagent_depth: 2`.** Nested delegation multiplies context across sessions.
+5. **LOW — Dead `small_model` reference.** Title generation and two compaction
+   attempts failed on quota instead of succeeding.
+6. **NOT A CAUSE — MCP schemas, RTK, skills.** These contribute a *constant* per-request
+   overhead; they cannot produce quadratic growth. RTK's 36.7% saving on 11 bash
+   commands is real but immaterial next to a 351M cache_read problem.
 
-3. **HIGH: MCP server schemas loaded into context**
-   - Evidence: 12 MCP servers configured, including database (34 tools), docker (10), playwright (25)
-   - All MCP tool definitions are loaded into the model context regardless of usage
-   - Even unused servers contribute schema overhead
-   - Impact: Large, constant context overhead per request
+---
 
-4. **MEDIUM: Long-running sessions with compaction**
-   - Evidence: "Virtual office for product operations" session running since 7:18 AM
-   - Compaction keep=8000 tokens but buffer=20000
-   - Long sessions accumulate context even with compaction
-   - Impact: Growing context per request in long sessions
+## 5. Why the Earlier Hypothesis Was Wrong
 
-5. **MEDIUM: Subagent depth = 2**
-   - Evidence: experimental.subagent_depth=2 configured
-   - Subagents can spawn their own subagents, multiplying context
-   - Each subagent gets its own context window
-   - Impact: Deeper nesting = more context loading
+An earlier draft of this report attributed the spike to MCP schema overhead, RTK's
+limited coverage, skill size, and concurrent sessions. Telemetry disproved each:
 
-6. **LOW: Caveman proxy base URLs removed**
-   - Evidence: Provider base URLs were pointing to caveman proxy (127.0.0.1:8787)
-   - These were removed for portability
-   - Impact: Caveman compression may not be active for all requests
+- MCP/skills/skills are **constant** overhead — they cannot explain quadratic growth.
+- Concurrency was not the driver; the 299.6M came from **one** session's prefix growth.
+- 91% of tokens were `cache_read`, not `input` — the cost was re-reading the prefix,
+  not loading schemas.
 
-### Token Consumption Breakdown (Estimated)
+---
 
-Based on available data:
-- 78 sessions, 33 subagents, 236 prompts, 2.2k steps
-- 373.2M total tokens (all time)
-- ~125M in 5 hours = ~25M/hour
+## 6. Corrective Actions Implemented
 
-Likely distribution:
-- System prompts + agent instructions: ~5-10K tokens per request
-- MCP tool schemas: ~10-20K tokens per request (12 servers)
-- Skill instructions: ~5-10K tokens (graphify SKILL.md is 39KB)
-- Conversation history: grows per session (compaction at 8000 keep)
-- Tool outputs: variable, potentially large
-- Subagent context: each subagent gets full context
+### 6.1 `compaction.buffer: 700000` — proactive compaction
 
-### Most Likely Root Cause
+`buffer` is the documented lever: *"Tokens to keep free below the model's limit.
+Larger values start automatic compaction earlier."*
 
-The primary driver of the 125M token spike is **multiple concurrent long-running sessions** (especially autonomous office sessions) each independently loading full context and making model calls. The RTK plugin only optimizes bash commands (minimal savings), while the bulk of token consumption comes from:
-1. MCP tool schema overhead (12 servers, 100+ tools)
-2. Agent instruction loading
-3. Skill instruction loading (graphify SKILL.md is 39KB)
-4. Conversation history accumulation
-5. Subagent context multiplication
+| buffer | trigger point |
+|---|---:|
+| 20,000 (before) | 980,000 |
+| **700,000 (after)** | **300,000** |
 
-### Minimal Corrective Action Plan
+The prefix can now never exceed ~300K tokens, capping per-turn cache_read at
+roughly a third of the observed peak.
 
-1. **Immediate**: Reduce concurrent sessions - consolidate autonomous office work into fewer sessions
-2. **Immediate**: Disable unused MCP servers per-project (keep only context7, deepwiki, caveman core)
-3. **Short-term**: Remove or condense large skill files (graphify SKILL.md at 39KB)
-4. **Short-term**: Set compaction keep to 4000 tokens (more aggressive)
-5. **Short-term**: Remove subagent_depth experimental (default to 1)
-6. **Medium-term**: Implement task-specific MCP enablement
-7. **Medium-term**: Benchmark free models for lightweight tasks
+Also: `keep.tokens` restored to **15000** (the V2 default — the previous 4000 was
+below the documented value), and the deprecated `prune` key removed.
 
-### Controlled Validation Procedure
+### 6.2 `plugins/session-guard.ts` — explicit session-length guard
 
-1. Create a fresh session with minimal context
-2. Run a simple task (e.g., "list files in current directory")
-3. Record token usage from MiniMax quota before/after
-4. Run a representative autonomous task
-5. Compare against baseline
+A plugin that compacts **before** the prefix grows large, rather than waiting for
+the automatic threshold.
 
-### Limitations
+- Hooks the `context` event, which fires on every agent-loop request.
+- Measures the assembled prefix from `event.messages` (array of
+  `{id, role, content, metadata}` — the hook exposes **no token counts**).
+- Token estimate uses **4 chars/token**, calibrated against live telemetry:
+  a 599,238-char prefix measured 149,184 cache_read tokens → **4.017 chars/token**.
+- Threshold **150,000 tokens**; **120s** cooldown; re-entrancy guard.
 
-- No previous machine configuration available for direct comparison (only bootstrap-pkg from git history)
-- MiniMax quota API only shows "general" model, not per-model breakdown
-- OpenCode does not expose per-request token counts via CLI
-- RTK gain only tracks bash commands, not MCP/agent context
-- 125M figure is user-reported, not independently verified from telemetry
+**Verified end-to-end** (threshold temporarily lowered to 5,000 to force a trigger):
+two `status=completed` compaction messages were written, and post-compaction
+`cache_read` fell from a growing prefix to a **flat ~128 tokens** per turn.
+
+### 6.3 `subagent_depth: 2 → 1`
+
+Stops nested delegation from multiplying context across sessions.
+
+### 6.4 `small_model` + `agents.title.model` repaired
+
+Both now point to `minimax-coding-plan/MiniMax-M3.1-Flash`.
+
+Note: `small_model` is a **legacy field** that only sets the Title agent's model.
+OpenCode filters `opencode-go` models whose cost is non-zero, so
+`opencode-go/glm-5.3-flash` does not exist. `agents.title.model` is therefore
+pinned explicitly as well. Verified: the Title agent resolves to
+`MiniMax-M3.1-Flash` on a fresh config load, and no `provider.free-limit` or
+`Model unavailable` errors appear.
+
+### 6.5 Invalid JSONC repaired
+
+Committed separately as `556f9f2` for clean rollback. All 12 MCP servers retained —
+the office needs them, and they were not the cause. The `"skills": ["./skills"]`
+path was restored; skills load lazily via the `skill` tool, so disabling them saved
+negligible tokens while removing real capability.
+
+### 6.6 Deliberately NOT done
+
+- **No MCP servers removed** — not a root cause; removing them would break the office.
+- **No skills disabled** — lazy loading; negligible token cost.
+- **No `experimental.background_compaction`** — experimental and skipped below ~64K tokens.
+- **No session deletion** — forensics must remain reproducible.
+
+---
+
+## 7. Controlled Validation
+
+| # | Step | Result |
+|---|---|---|
+| 1 | Config validity (JSONC parse) | PASS — valid; 12 MCP servers, 4 plugins, skills path intact |
+| 2 | Agent resolution | PASS — 14 agents resolve (incl. `title`, `compaction`, `summary`) |
+| 3 | Title model | PASS — resolves to `minimax-coding-plan/MiniMax-M3.1-Flash`; no quota errors |
+| 4 | Guard end-to-end | PASS — 2 completed compactions; `cache_read` flat at ~128 tokens post-compaction |
+| 5 | Threshold math | PASS — buffer 700,000 → trigger at 300,000 (from 980,000) |
+| 6 | Office services | PASS — `opencode-server.service` active (4099, auth-required as expected); `chloe-pwa.service` active (4096, HTTP 200) |
+
+---
+
+## 8. Residual Risks and Limitations
+
+- **Character-based token estimation.** The `context` hook exposes no token counts.
+  The 4.017 chars/token ratio was calibrated on English/code; sessions dominated by
+  non-Latin text or large binary-ish payloads will estimate low. The 150K threshold
+  has ample headroom below the 300K automatic trigger, so the guard errs safe.
+- **All free models are quota-exhausted** (`provider.free-limit`) and
+  `opencode-go/glm-5.3-flash` is unavailable. Compaction must therefore run on the
+  MiniMax Token Plan model. When free quota returns, `agents.compaction.model` can be
+  pointed at a free model to take summarization off the plan.
+- **The 385M figure is all-time**, not the 5-hour window. The 125M/5h figure is
+  user-reported and was not independently reproducible from telemetry.
+- **Not restarted from inside a hosted session.** Restarting
+  `opencode-server.service` from a session hosted by that server kills the session's
+  own host. Use `opencode run --standalone` for config verification instead.
+- **Cache-read billing is not confirmed.** models.dev lists `cache_read: 0` for this
+  provider, but the Token Plan reports usage regardless. The token *volume* is
+  confirmed from local telemetry; the *billing* semantics are provider-side.
+
+---
+
+## 9. Commits
+
+| Commit | Contents |
+|---|---|
+| `556f9f2` | `fix(config)`: repair invalid JSONC, `subagent_depth` 2→1, `keep.tokens` 8000→4000 |
+| *(this commit)* | `fix(config)`: compaction buffer 700000, `keep.tokens` 15000, `small_model`/Title model repair, `session-guard` plugin, corrected report |
+
+---
+
+## 10. Reproduction
+
+```bash
+# Token breakdown
+sqlite3 /root/.local/share/opencode/opencode.db \
+  "select sum(tokens_input), sum(tokens_cache_read), sum(tokens_output),
+          count(*), sum(time_compacting is not null) from session_v2;"
+
+# Sessions that ever compacted
+sqlite3 /root/.local/share/opencode/opencode.db \
+  "select count(*) from session_v2 where time_compacting is not null;"
+```
